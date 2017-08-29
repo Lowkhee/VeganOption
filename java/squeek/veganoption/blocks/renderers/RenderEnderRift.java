@@ -80,8 +80,8 @@ public class RenderEnderRift extends TileEntitySpecialRenderer<TileEntityEnderRi
 				f6 *= 2f;
 
 			float f8 = (float) (face == EnumFaceDirection.UP ? (-(y + faceOffset)) : (y + faceOffset));
-			float f9 = f8 + (float) ActiveRenderInfo.getPosition().yCoord;
-			float f10 = f8 + f5 + (float) ActiveRenderInfo.getPosition().yCoord;
+			float f9 = f8 + (float) ActiveRenderInfo.getRotationXY(); //scaled along either X or Z, XY or ZY
+			float f10 = f8 + f5 + (float) ActiveRenderInfo.getRotationXY();
 			float f11 = f9 / f10;
 			f11 += (float) (y + faceOffset);
 			GlStateManager.translate(entityX, f11, entityZ);
@@ -109,8 +109,8 @@ public class RenderEnderRift extends TileEntitySpecialRenderer<TileEntityEnderRi
 			GlStateManager.rotate((float) (i * i * 4321 * i * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
 			GlStateManager.translate(-0.5F, -0.5F, 0.0F);
 			GlStateManager.translate(-entityX, -entityZ, -entityY);
-			f9 = f8 + (float) ActiveRenderInfo.getPosition().yCoord;
-			GlStateManager.translate(ActiveRenderInfo.getPosition().xCoord * f5 / f9, ActiveRenderInfo.getPosition().zCoord * f5 / f9, -entityY);
+			f9 = f8 + (float) ActiveRenderInfo.getRotationXY();
+			GlStateManager.translate(ActiveRenderInfo.getRotationX() * f5 / f9, ActiveRenderInfo.getRotationZ() * f5 / f9, -entityY);
 
 			Tessellator tessellator = Tessellator.getInstance();
 			VertexBuffer vertexbuffer = tessellator.getBuffer();

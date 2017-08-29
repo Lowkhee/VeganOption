@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DescriptionCategory extends BlankRecipeCategory<DescriptionWrapper>
 {
-	private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+	private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 	public static final int WIDTH = 160;
 	public static final int HEIGHT = 130;
 	public static final int Y_START = 22;

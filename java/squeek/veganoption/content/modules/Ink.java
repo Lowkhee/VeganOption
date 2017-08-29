@@ -1,5 +1,7 @@
 package squeek.veganoption.content.modules;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
@@ -38,46 +40,52 @@ public class Ink implements IContentModule
 		waxVegetable = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".waxVegetable")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "waxVegetable");
+			.setRegistryName(ModInfo.MODID, "waxVegetable");
 		GameRegistry.register(waxVegetable);
 
 		blackVegetableOilInk = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".inkVegetableOilBlack")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "inkVegetableOilBlack")
+			.setRegistryName(ModInfo.MODID, "inkVegetableOilBlack")
 			.setContainerItem(Items.GLASS_BOTTLE);
 		GameRegistry.register(blackVegetableOilInk);
 
-		blackInkFluid = new Fluid("ink_black", new ResourceLocation(ModInfo.MODID_LOWER, "blocks/black_ink_still"), new ResourceLocation(ModInfo.MODID_LOWER, "blocks/black_ink_flow"));
+		blackInkFluid = new Fluid("ink_black", new ResourceLocation(ModInfo.MODID, "blocks/black_ink_still"), new ResourceLocation(ModInfo.MODID, "blocks/black_ink_flow"));
 		FluidRegistry.registerFluid(blackInkFluid);
 		blackInk = new BlockFluidClassic(blackInkFluid, Material.WATER)
 			.setUnlocalizedName(ModInfo.MODID + ".inkBlack")
-			.setRegistryName(ModInfo.MODID_LOWER, "inkBlack");
+			.setRegistryName(ModInfo.MODID, "inkBlack");
 		blackInkFluid.setBlock(blackInk);
 		blackInkFluid.setUnlocalizedName(blackInk.getUnlocalizedName());
 		GameRegistry.register(blackInk);
 		GameRegistry.register(new ItemBlock(blackInk).setRegistryName(blackInk.getRegistryName()));
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk), new ItemStack(blackVegetableOilInk.getContainerItem()));
-
+		//A: type of fluid and amount B: bottle when full C: bottle when empty
+		//FluidContainerRegistry.registerFluidContainer(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk), new ItemStack(blackVegetableOilInk.getContainerItem()));
+		//FluidStack fluidStack = new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME);
+		//ItemStack bottle = new ItemStack(blackVegetableOilInk);
+		//UniversalBucket bottle = new UniversalBucket(Fluid.BUCKET_VOLUME, new ItemStack(blackVegetableOilInk.getContainerItem()), false);
+		//bucketPlantMilk = UniversalBucket.getFilledBucket(bottle, fluidPlantMilk);
+		
 		whiteVegetableOilInk = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".inkVegetableOilWhite")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "inkVegetableOilWhite")
+			.setRegistryName(ModInfo.MODID, "inkVegetableOilWhite")
 			.setContainerItem(Items.GLASS_BOTTLE);
 		GameRegistry.register(whiteVegetableOilInk);
 
-		whiteInkFluid = new Fluid("ink_white", new ResourceLocation(ModInfo.MODID_LOWER, "blocks/white_ink_still"), new ResourceLocation(ModInfo.MODID_LOWER, "blocks/white_ink_flow"));
+		whiteInkFluid = new Fluid("ink_white", new ResourceLocation(ModInfo.MODID, "blocks/white_ink_still"), new ResourceLocation(ModInfo.MODID, "blocks/white_ink_flow"));
 		FluidRegistry.registerFluid(whiteInkFluid);
 		whiteInk = new BlockFluidClassic(whiteInkFluid, Material.WATER)
 			.setUnlocalizedName(ModInfo.MODID + ".inkWhite")
-			.setRegistryName(ModInfo.MODID_LOWER, "inkWhite");
+			.setRegistryName(ModInfo.MODID, "inkWhite");
 		whiteInkFluid.setBlock(whiteInk);
 		whiteInkFluid.setUnlocalizedName(whiteInk.getUnlocalizedName());
 		GameRegistry.register(whiteInk);
 		GameRegistry.register(new ItemBlock(whiteInk).setRegistryName(whiteInk.getRegistryName()));
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(whiteInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(whiteVegetableOilInk), new ItemStack(whiteVegetableOilInk.getContainerItem()));
+		//FluidContainerRegistry.registerFluidContainer(new FluidStack(whiteInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(whiteVegetableOilInk), new ItemStack(whiteVegetableOilInk.getContainerItem()));
+		
 	}
 
 	@Override
@@ -141,3 +149,4 @@ public class Ink implements IContentModule
 	}
 
 }
+

@@ -49,14 +49,14 @@ public class VegetableOil implements IContentModule
 		seedSunflower = new ItemFood(1, 0.05f, false)
 			.setUnlocalizedName(ModInfo.MODID + ".seedSunflower")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "seedsSunflower");
+			.setRegistryName(ModInfo.MODID, "seedsSunflower");
 		GameRegistry.register(seedSunflower);
 
-		fluidVegetableOil = new Fluid("fluid_oil_vegetable", new ResourceLocation(ModInfo.MODID_LOWER, "blocks/vegetable_oil_still"), new ResourceLocation(ModInfo.MODID_LOWER, "blocks/vegetable_oil_flow"));
+		fluidVegetableOil = new Fluid("fluid_oil_vegetable", new ResourceLocation(ModInfo.MODID, "blocks/vegetable_oil_still"), new ResourceLocation(ModInfo.MODID, "blocks/vegetable_oil_flow"));
 		FluidRegistry.registerFluid(fluidVegetableOil);
 		fluidBlockVegetableOil = new BlockFluidClassic(fluidVegetableOil, Material.WATER)
 			.setUnlocalizedName(ModInfo.MODID + ".fluidOilVegetable")
-			.setRegistryName(ModInfo.MODID_LOWER, "fluidOilVegetable");
+			.setRegistryName(ModInfo.MODID, "fluidOilVegetable");
 		fluidVegetableOil.setBlock(fluidBlockVegetableOil);
 		fluidVegetableOil.setUnlocalizedName(fluidBlockVegetableOil.getUnlocalizedName());
 		GameRegistry.register(fluidBlockVegetableOil);
@@ -65,11 +65,11 @@ public class VegetableOil implements IContentModule
 		oilVegetable = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".oilVegetable")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "oilVegetable")
+			.setRegistryName(ModInfo.MODID, "oilVegetable")
 			.setContainerItem(Items.GLASS_BOTTLE);
 		GameRegistry.register(oilVegetable);
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(fluidVegetableOil, Fluid.BUCKET_VOLUME), new ItemStack(oilVegetable), new ItemStack(oilVegetable.getContainerItem()));
+		//FluidContainerRegistry.registerFluidContainer(new FluidStack(fluidVegetableOil, Fluid.BUCKET_VOLUME), new ItemStack(oilVegetable), new ItemStack(oilVegetable.getContainerItem()));
 	}
 
 	@Override

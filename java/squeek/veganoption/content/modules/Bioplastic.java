@@ -26,13 +26,13 @@ public class Bioplastic implements IContentModule
 		bioplastic = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".bioplastic")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "bioplastic");
+			.setRegistryName(ModInfo.MODID, "bioplastic");
 		GameRegistry.register(bioplastic);
 
 		plasticRod = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".plasticRod")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "plastic_rod");
+			.setRegistryName(ModInfo.MODID, "plastic_rod");
 		GameRegistry.register(plasticRod);
 	}
 

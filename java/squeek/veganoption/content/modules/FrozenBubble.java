@@ -46,11 +46,11 @@ public class FrozenBubble implements IContentModule
 	@Override
 	public void create()
 	{
-		fluidSoapSolution = new Fluid("fluid_soap_solution", new ResourceLocation(ModInfo.MODID_LOWER, "blocks/soap_solution_still"), new ResourceLocation(ModInfo.MODID_LOWER, "blocks/soap_solution_flow"));
+		fluidSoapSolution = new Fluid("fluid_soap_solution", new ResourceLocation(ModInfo.MODID, "blocks/soap_solution_still"), new ResourceLocation(ModInfo.MODID, "blocks/soap_solution_flow"));
 		FluidRegistry.registerFluid(fluidSoapSolution);
 		blockFluidSoapSolution = new BlockFluidClassic(fluidSoapSolution, Material.WATER)
 			.setUnlocalizedName(ModInfo.MODID + ".fluidSoapSolution")
-			.setRegistryName(ModInfo.MODID_LOWER, "fluidSoapSolution");
+			.setRegistryName(ModInfo.MODID, "fluidSoapSolution");
 		fluidSoapSolution.setBlock(blockFluidSoapSolution);
 		fluidSoapSolution.setUnlocalizedName(blockFluidSoapSolution.getUnlocalizedName());
 		GameRegistry.register(blockFluidSoapSolution);
@@ -59,19 +59,19 @@ public class FrozenBubble implements IContentModule
 		soapSolution = new ItemSoapSolution()
 			.setUnlocalizedName(ModInfo.MODID + ".soapSolution")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "soapSolution")
+			.setRegistryName(ModInfo.MODID, "soapSolution")
 			.setContainerItem(Items.GLASS_BOTTLE);
 		GameRegistry.register(soapSolution);
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(fluidSoapSolution, Fluid.BUCKET_VOLUME), new ItemStack(soapSolution), new ItemStack(soapSolution.getContainerItem()));
+		//FluidContainerRegistry.registerFluidContainer(new FluidStack(fluidSoapSolution, Fluid.BUCKET_VOLUME), new ItemStack(soapSolution), new ItemStack(soapSolution.getContainerItem()));
 
 		frozenBubble = new ItemFrozenBubble()
 			.setUnlocalizedName(ModInfo.MODID + ".frozenBubble")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "frozenBubble");
+			.setRegistryName(ModInfo.MODID, "frozenBubble");
 		GameRegistry.register(frozenBubble);
 
-		EntityRegistry.registerModEntity(new ResourceLocation(ModInfo.MODID_LOWER, "bubble"), EntityBubble.class, "bubble", ContentHelper.ENTITYID_BUBBLE, VeganOption.instance, 80, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ModInfo.MODID, "bubble"), EntityBubble.class, "bubble", ContentHelper.ENTITYID_BUBBLE, VeganOption.instance, 80, 1, true);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -101,7 +101,7 @@ public class FrozenBubble implements IContentModule
 		ItemStack bubbleStack = new ItemStack(frozenBubble, 1, 1);
 		while (!ItemFrozenBubble.isFull(bubbleStack) && bubbleStack.getItem() != Items.ENDER_PEARL)
 		{
-			ContentHelper.registerTypicalItemStackModel(bubbleStack, ModInfo.MODID_LOWER + ":frozenBubbleFilled");
+			ContentHelper.registerTypicalItemStackModel(bubbleStack, ModInfo.MODID + ":frozenBubbleFilled");
 			bubbleStack = ItemFrozenBubble.fill(bubbleStack, 1);
 		}
 	}

@@ -42,6 +42,7 @@ public class BlockEncrustedObsidian extends BlockObsidian
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{

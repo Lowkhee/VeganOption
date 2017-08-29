@@ -41,13 +41,13 @@ public class HarvestCraft extends IntegratorBase
 		bbqSauce = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".bbqSauce")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "bbqSauce");
+			.setRegistryName(ModInfo.MODID, "bbqSauce");
 		GameRegistry.register(bbqSauce);
 
 		bbqTofu = new ItemFood(14, 1.0F, false)
 			.setUnlocalizedName(ModInfo.MODID + ".bbqTofu")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "bbqTofu");
+			.setRegistryName(ModInfo.MODID, "bbqTofu");
 		GameRegistry.register(bbqTofu);
 		TooltipHelper.registerItem(bbqTofu);
 	}

@@ -13,12 +13,14 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import squeek.veganoption.content.crafting.PistonCraftingHandler;
 import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.helpers.WorldHelper;
+import org.apache.logging.log4j.*;
 
 import java.util.*;
 import java.util.Map.Entry;
 
 public class PistonCraftingRecipe
 {
+	private static final Logger Log = LogManager.getLogger(PistonCraftingRecipe.class.getCanonicalName());
 	public List<InputItemStack> itemInputs = new ArrayList<InputItemStack>();
 	public FluidStack fluidInput = null;
 	public List<ItemStack> itemOutputs = new ArrayList<ItemStack>();
@@ -84,8 +86,9 @@ public class PistonCraftingRecipe
 		if (!itemInputMatches(entityItemsByInput))
 			return false;
 
+		//is it 1:1 ratio, input:output
 		boolean isReplacementPossible = itemInputs.size() == itemOutputs.size() && fluidOutput == null;
-
+		Log.log(squeek.veganoption.ModInfo.debugLevel,"Is replacment recipe (non fluids):" + (isReplacementPossible ? "true" : "false"));
 		if (isReplacementPossible)
 		{
 			int i = 0;
@@ -94,10 +97,14 @@ public class PistonCraftingRecipe
 				ItemStack output = itemOutputs.get(i);
 				for (EntityItem inputEntity : entry.getValue())
 				{
-					ItemStack inputStack = inputEntity.getItem();
+					ItemStack inputStack = inputEntity.getEntityItem();
 					ItemStack newItemStack = output.copy();
+					//set the stack size of the input
 					newItemStack.setCount((int) (inputStack.getCount() * ((float) output.getCount() / entry.getKey().stackSize())));
-					inputEntity.setItem(newItemStack);
+					inputEntity.setEntityItemStack(newItemStack);
+					Log.log(squeek.veganoption.ModInfo.debugLevel,"Output: " + output.getDisplayName());
+					Log.log(squeek.veganoption.ModInfo.debugLevel,"Input: " + inputStack.getDisplayName());
+					Log.log(squeek.veganoption.ModInfo.debugLevel,"New Item:" + newItemStack.getDisplayName());
 				}
 				i++;
 			}
@@ -107,10 +114,11 @@ public class PistonCraftingRecipe
 			Map<ItemStack, EntityItem> entityItemsByOutput = new HashMap<ItemStack, EntityItem>();
 			for (ItemStack itemOutput : itemOutputs)
 			{
+				Log.log(squeek.veganoption.ModInfo.debugLevel,"Outputs: " + itemOutput.getDisplayName());
 				List<EntityItem> randomReferenceEntityList = entityItemsByInput.get(itemInputs.get(rand.nextInt(itemInputs.size())));
 				EntityItem randomReferenceEntity = randomReferenceEntityList.get(rand.nextInt(randomReferenceEntityList.size()));
 				EntityItem outputEntity = new EntityItem(world, randomReferenceEntity.posX, randomReferenceEntity.posY, randomReferenceEntity.posZ, itemOutput.copy());
-				outputEntity.getItem().setCount(0);
+				outputEntity.getEntityItem().setCount(0);
 				entityItemsByOutput.put(itemOutput, outputEntity);
 			}
 
@@ -135,7 +143,7 @@ public class PistonCraftingRecipe
 					int numConsumed = 0;
 					for (EntityItem inputEntity : inputEntry.getValue())
 					{
-						ItemStack inputStack = inputEntity.getItem();
+						ItemStack inputStack = inputEntity.getEntityItem();
 						int numToConsume = Math.min(inputStack.getCount(), numRequired - numConsumed);
 						inputStack.shrink(numToConsume);
 						numConsumed += numToConsume;
@@ -146,7 +154,7 @@ public class PistonCraftingRecipe
 				}
 				for (Entry<ItemStack, EntityItem> entry : entityItemsByOutput.entrySet())
 				{
-					entry.getValue().getItem().grow(entry.getKey().getCount());
+					entry.getValue().getEntityItem().grow(entry.getKey().getCount());
 				}
 			}
 			while (fluidInputMatches(displacedFluid) && itemInputMatches(entityItemsByInput) && canOutputFluid(fluidHandler));
@@ -231,7 +239,7 @@ public class PistonCraftingRecipe
 		List<EntityItem> matchingEntities = new ArrayList<EntityItem>();
 		for (EntityItem entityItem : entityItems)
 		{
-			if (target.matches(entityItem.getItem()))
+			if (target.matches(entityItem.getEntityItem()))
 			{
 				matchingEntities.add(entityItem);
 			}
@@ -242,10 +250,10 @@ public class PistonCraftingRecipe
 			int largestStackSize = 0;
 			for (EntityItem entityItem : matchingEntities)
 			{
-				if (entitiesOfOneTypeWithLargestStackSize != null && entitiesOfOneTypeWithLargestStackSize.get(0).getItem().isItemEqual(entityItem.getItem()))
+				if (entitiesOfOneTypeWithLargestStackSize != null && entitiesOfOneTypeWithLargestStackSize.get(0).getEntityItem().isItemEqual(entityItem.getEntityItem()))
 					continue;
 
-				List<EntityItem> exactMatches = getMatchingEntityItems(new InputItemStack(entityItem.getItem()), matchingEntities);
+				List<EntityItem> exactMatches = getMatchingEntityItems(new InputItemStack(entityItem.getEntityItem()), matchingEntities);
 				int exactMatchesStackSize = getStackSizeOfEntityItems(exactMatches);
 
 				if (exactMatchesStackSize >= target.stackSize())
@@ -267,7 +275,7 @@ public class PistonCraftingRecipe
 		int stackSize = 0;
 		for (EntityItem entityItem : entityItems)
 		{
-			stackSize = entityItem.getItem().getCount();
+			stackSize = entityItem.getEntityItem().getCount();
 		}
 		return stackSize;
 	}

@@ -73,10 +73,10 @@ public class ItemWashableWheat extends Item
 
 	public static boolean tryWash(EntityItem entityItem)
 	{
-		if (entityItem == null || entityItem.world.isRemote || entityItem.getItem().isEmpty())
+		if (entityItem == null || entityItem.world.isRemote || entityItem.getEntityItem().isEmpty())
 			return false;
 
-		if (!isReadyToCook(entityItem.getItem()))
+		if (!isReadyToCook(entityItem.getEntityItem()))
 		{
 			BlockPos fluidBlockPos = new BlockPos(MathHelper.floor(entityItem.posX), MathHelper.floor(entityItem.posY), MathHelper.floor(entityItem.posZ));
 			FluidStack consumedFluid = FluidHelper.consumeExactFluid(entityItem.world, fluidBlockPos, FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
@@ -84,18 +84,18 @@ public class ItemWashableWheat extends Item
 			if (consumedFluid != null)
 			{
 				EntityItem entityItemToWash = entityItem;
-				ItemStack doughToWash = entityItemToWash.getItem();
+				ItemStack doughToWash = entityItemToWash.getEntityItem();
 
-				if (entityItemToWash.getItem().getCount() > 1)
+				if (entityItemToWash.getEntityItem().getCount() > 1)
 				{
-					doughToWash = entityItem.getItem().splitStack(1);
+					doughToWash = entityItem.getEntityItem().splitStack(1);
 					entityItemToWash = new EntityItem(entityItemToWash.world, entityItemToWash.posX, entityItemToWash.posY, entityItemToWash.posZ, doughToWash);
 					entityItemToWash.setPickupDelay(10);
 					entityItemToWash.world.spawnEntity(entityItemToWash);
 				}
 
 				ItemStack washedItemStack = wash(doughToWash, 1);
-				entityItemToWash.setItem(washedItemStack);
+				entityItemToWash.setEntityItemStack(washedItemStack);
 
 				return true;
 			}

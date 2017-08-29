@@ -6,14 +6,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import squeek.veganoption.VeganOption;
 import squeek.veganoption.helpers.LangHelper;
 import squeek.veganoption.helpers.MiscHelper;
 
 import java.util.*;
 
+import org.apache.logging.log4j.*;
+
 public class DescriptionRegistry
 {
+	private static final Logger Log = LogManager.getLogger(DescriptionRegistry.class.getCanonicalName());
+	
 	public static List<ItemStack> itemStacksWithUsageDescriptions = new ArrayList<ItemStack>();
 	public static List<ItemStack> itemStacksWithCraftingDescriptions = new ArrayList<ItemStack>();
 	public static Map<ItemStack, String> itemStacksWithCustomUsageDescriptions = new HashMap<ItemStack, String>();
@@ -42,7 +45,7 @@ public class DescriptionRegistry
 
 		long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
 		String timeTakenString = "took " + (timeSpentInMilliseconds / 1000.0f) + " seconds";
-		VeganOption.Log.info("Found and registered " + numRegistered + " items/blocks with description text (" + timeTakenString + ")");
+		Log.log(Level.INFO, "Found and registered " + numRegistered + " items/blocks with description text (" + timeTakenString + ")");
 	}
 
 	public static int tryRegisterItemAndSubtypes(Item item)

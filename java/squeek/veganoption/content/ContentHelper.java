@@ -213,7 +213,7 @@ public class ContentHelper
 	@SideOnly(Side.CLIENT)
 	public static void registerFluidMapperAndMeshDef(Block fluid, final String variantName)
 	{
-		final ModelResourceLocation loc = new ModelResourceLocation(ModInfo.MODID_LOWER + ":fluids", variantName);
+		final ModelResourceLocation loc = new ModelResourceLocation(ModInfo.MODID + ":fluids", variantName);
 		Item itemblock = Item.getItemFromBlock(fluid);
 		ModelBakery.registerItemVariants(itemblock);
 		ModelLoader.setCustomMeshDefinition(itemblock, new ItemMeshDefinition()

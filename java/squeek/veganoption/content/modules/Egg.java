@@ -42,23 +42,23 @@ public class Egg implements IContentModule
 		appleSauce = new ItemFoodContainered(3, 1f, false)
 			.setUnlocalizedName(ModInfo.MODID + ".appleSauce")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "apple_sauce")
+			.setRegistryName(ModInfo.MODID, "apple_sauce")
 			.setContainerItem(Items.BOWL);
 		GameRegistry.register(appleSauce);
 
 		potatoStarch = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".potatoStarch")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "potato_starch");
+			.setRegistryName(ModInfo.MODID, "potato_starch");
 		GameRegistry.register(potatoStarch);
 
 		plasticEgg = new ItemThrowableGeneric(EntityPlasticEgg.class)
 			.setUnlocalizedName(ModInfo.MODID + ".plasticEgg")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "plastic_egg");
+			.setRegistryName(ModInfo.MODID, "plastic_egg");
 		GameRegistry.register(plasticEgg);
 
-		EntityRegistry.registerModEntity(new ResourceLocation(ModInfo.MODID_LOWER, "plastic_egg"), EntityPlasticEgg.class, "plastic_egg", ContentHelper.ENTITYID_PLASTIC_EGG, VeganOption.instance, 80, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(ModInfo.MODID, "plastic_egg"), EntityPlasticEgg.class, "plastic_egg", ContentHelper.ENTITYID_PLASTIC_EGG, VeganOption.instance, 80, 1, true);
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -21,7 +21,7 @@ import static squeek.veganoption.integration.jei.description.DescriptionCategory
 
 public abstract class DescriptionMaker
 {
-	private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+	private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 	public static final int DESC_DISPLACEMENT_RELATED = 3;
 	public static final int DESC_DISPLACEMENT_REFERENCED = 3;
 

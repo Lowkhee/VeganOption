@@ -32,13 +32,13 @@ public class ToxicMushroom implements IContentModule
 			.setPotionEffect(new PotionEffect(MobEffects.POISON, 5, 0), 1.0F)
 			.setUnlocalizedName(ModInfo.MODID + ".falseMorel")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "falseMorel");
+			.setRegistryName(ModInfo.MODID, "falseMorel");
 		GameRegistry.register(falseMorel);
 
 		falseMorelFermented = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".falseMorelFermented")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "falseMorelFermented");
+			.setRegistryName(ModInfo.MODID, "falseMorelFermented");
 		GameRegistry.register(falseMorelFermented);
 	}
 

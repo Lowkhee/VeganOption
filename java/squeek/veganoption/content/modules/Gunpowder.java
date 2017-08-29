@@ -29,13 +29,13 @@ public class Gunpowder implements IContentModule
 		sulfur = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".sulfur")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "sulfur");
+			.setRegistryName(ModInfo.MODID, "sulfur");
 		GameRegistry.register(sulfur);
 
 		saltpeter = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".saltpeter")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "saltpeter");
+			.setRegistryName(ModInfo.MODID, "saltpeter");
 		GameRegistry.register(saltpeter);
 	}
 

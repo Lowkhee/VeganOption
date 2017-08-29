@@ -1,30 +1,57 @@
 package squeek.veganoption.asm;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+
+import org.apache.logging.log4j.*;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
+//import jline.internal.Log;
+
 import static org.objectweb.asm.Opcodes.*;
+
+
 
 public class ClassTransformer implements IClassTransformer
 {
+	private static final Logger Log = LogManager.getLogger(ClassTransformer.class.getCanonicalName());
 	// gets set in ASMPlugin.injectData
 	public static boolean isEnvObfuscated = false;
+	
+	//once world/World is loaded, further transFormedNames must be lowercase 
+	//debug - run in debugger then build .jar and run in mod folder (look in latest log file for the same reference number)
+	protected static void findNewObfValues(ClassNode classNode, boolean obf, String transName)
+	{
+		int counter = 0;
+		String obfString = obf ? "Obf" : "nonObf";
+		Log.log(squeek.veganoption.ModInfo.debugLevel, "--------------------------------Class Name: " + classNode.name + "--- Class Path: " + transName + "--------------------------------");
+		for(MethodNode methodNode : classNode.methods)
+		{
+			counter++;
+			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method name:" + methodNode.name);
+			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method desc:" + methodNode.desc);
+			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method location:" + counter);
+		}
+	}
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
-		if (transformedName.equals("net.minecraft.block.BlockDynamicLiquid"))
+		
+		if (transformedName.equals("net.minecraft.block.blockdynamicliquid"))
 		{
 			boolean isObfuscated = !name.equals(transformedName);
 
 			ClassNode classNode = readClassFromBytes(bytes);
+			
+			//debug
+			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
 
 			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "tryFlowInto", isObfuscated ? "(Laid;Lcm;Lars;I)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)V");
-
+			
 			/*
 			if (Hooks.onFlowIntoBlock(world, pos, state, flowDecay))
 				return;
@@ -44,12 +71,15 @@ public class ClassTransformer implements IClassTransformer
 
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraft.tileentity.TileEntityPiston"))
+		else if (transformedName.equals("net.minecraft.tileentity.tileentitypiston"))
 		{
 			boolean isObfuscated = !name.equals(transformedName);
 
 			ClassNode classNode = readClassFromBytes(bytes);
 
+			//debug
+			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
+			
 			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "E_" : "update", "()V");
 
 			InsnList toInject = new InsnList();
@@ -66,12 +96,14 @@ public class ClassTransformer implements IClassTransformer
 			method.instructions.insertBefore(findFirstInstruction(method), toInject);
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraft.block.BlockPistonBase"))
+		else if (transformedName.equals("net.minecraft.block.blockpistonbase"))
 		{
+			Log.log(squeek.veganoption.ModInfo.debugLevel, "Found: net.minecraft.block.blockpistonbase");
 			boolean isObfuscated = !name.equals(transformedName);
-
 			ClassNode classNode = readClassFromBytes(bytes);
-
+			//debug
+			ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
+			
 			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "doMove", isObfuscated ? "(Laid;Lcm;Lct;Z)Z" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
 
 			/*
@@ -93,11 +125,15 @@ public class ClassTransformer implements IClassTransformer
 			boolean isObfuscated = !name.equals(transformedName);
 
 			ClassNode classNode = readClassFromBytes(bytes);
+			
+			//debug
+			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
 
-			// isFullCube
-			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "t" : "isBlockFullCube", isObfuscated ? "(Lcm;)Z" : "(Lnet/minecraft/util/math/BlockPos;)Z");
-
+			// isFullCube before: "t" and "(Lcm;)Z" Now: "d" and "(Lco;Z)Z"
+			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "d" : "isBlockFullCube", isObfuscated ? "(Lco;Z)Z" : "(Lnet/minecraft/util/math/BlockPos;)Z");
+			
 			LabelNode end = findEndLabel(method);
+			
 			AbstractInsnNode targetNode = findFirstInstruction(method);
 
 			InsnList toInject = new InsnList();
@@ -135,9 +171,12 @@ public class ClassTransformer implements IClassTransformer
 
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraftforge.fluids.BlockFluidFinite"))
+		else if (transformedName.equals("net.minecraftforge.fluids.blockfluidfinite"))
 		{
 			ClassNode classNode = readClassFromBytes(bytes);
+			
+			//debug
+			//ClassTransformer.findNewObfValues(classNode, isEnvObfuscated, transformedName);
 
 			MethodNode method = findMethodNodeOfClass(classNode, isEnvObfuscated ? "b" : "updateTick", isEnvObfuscated ? "(Laid;Lcm;Lars;Ljava/util/Random;)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V");
 
@@ -169,12 +208,14 @@ public class ClassTransformer implements IClassTransformer
 
 	private byte[] writeClassToBytes(ClassNode classNode)
 	{
-		return writeClassToBytes(classNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		//(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) causes crash?
+		return writeClassToBytes(classNode, ClassWriter.COMPUTE_MAXS);
 	}
 
 	private byte[] writeClassToBytes(ClassNode classNode, int flags)
 	{
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		//(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) causes crash?
+		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		classNode.accept(writer);
 		return writer.toByteArray();
 	}
@@ -210,7 +251,7 @@ public class ClassTransformer implements IClassTransformer
 	{
 		return getOrFindInstruction(method.instructions.getFirst());
 	}
-
+	
 	public LabelNode findEndLabel(MethodNode method)
 	{
 		for (AbstractInsnNode instruction = method.instructions.getLast(); instruction != null; instruction = instruction.getPrevious())

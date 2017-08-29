@@ -6,6 +6,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import squeek.veganoption.helpers.RandomHelper;
+import org.apache.logging.log4j.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +18,7 @@ import java.util.Map.Entry;
 
 public class CraftingModifier
 {
+	private static final Logger Log = LogManager.getLogger(CraftingModifier.class.getCanonicalName());
 	public HashMap<ItemStack, ItemStack[]> inputsToRemoveForOutput = new HashMap<ItemStack, ItemStack[]>();
 	public HashMap<ItemStack, ItemStack[]> inputsToKeepForOutput = new HashMap<ItemStack, ItemStack[]>();
 
@@ -25,7 +29,8 @@ public class CraftingModifier
 
 	public void addInputsToRemoveForOutput(ItemStack output, ItemStack... inputs)
 	{
-		inputsToRemoveForOutput.put(output, inputs);
+		
+			inputsToRemoveForOutput.put(output, inputs);
 	}
 
 	public void addInputsToRemoveForOutput(ItemStack output, String... inputOreDicts)
@@ -67,18 +72,26 @@ public class CraftingModifier
 			ItemStack stackInSlot = event.craftMatrix.getStackInSlot(i);
 			if (!stackInSlot.isEmpty())
 			{
+				Log.log(squeek.veganoption.ModInfo.debugLevel,"Crafting slot item: " + stackInSlot.getDisplayName());
 				for (ItemStack inputToRemove : inputsToRemove)
 				{
+					Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Remove: " + inputToRemove.getDisplayName());
 					if (OreDictionary.itemMatches(inputToRemove, stackInSlot, false))
 					{
-						stackInSlot.shrink(inputToRemove.getCount());
-						if (stackInSlot.getCount() <= 0)
-							event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY);
+							//stackInSlot.shrink(inputToRemove.getCount());
+						if (stackInSlot.getCount() <= 1)
+							if(event.crafting.getItem().getUnlocalizedName().equals("item.forge.bucketFilled"))
+								event.craftMatrix.setInventorySlotContents(i, new ItemStack(Items.WATER_BUCKET.setContainerItem(null))); //ItemStack.EMPTY -> unable to find recipe without an Item in slot
+							else if(event.crafting.getItem().getContainerItem().getUnlocalizedName().equals("item.glassBottle"))
+								event.craftMatrix.setInventorySlotContents(i, new ItemStack(Items.GLASS_BOTTLE.setContainerItem(null)));
+							else
+								event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY); 
 						break;
 					}
 				}
 				for (ItemStack inputToKeep : inputsToKeep)
 				{
+					Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Keep: " + inputToKeep.getDisplayName());
 					if (OreDictionary.itemMatches(inputToKeep, stackInSlot, false))
 					{
 						stackInSlot.grow(inputToKeep.getCount());

@@ -30,7 +30,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 
 public class TileEntityBasin extends TileEntity implements ITickable
 {
-	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME);
+	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*5);
 	protected boolean isPowered = false;
 	protected boolean fluidConsumeStopped = true;
 	protected int ticksUntilNextFluidConsume = FLUID_CONSUME_TICK_PERIOD;
@@ -90,11 +90,11 @@ public class TileEntityBasin extends TileEntity implements ITickable
 
 		for (EntityItem entityItemWithin : entityItemsWithin)
 		{
-			if (!FluidContainerHelper.isEmptyContainer(entityItemWithin.getItem()))
+			if (!FluidContainerHelper.isEmptyContainer(entityItemWithin.getEntityItem()))
 				continue;
 
 			EntityItem entityItemToFill = entityItemWithin;
-			ItemStack containerToFill = entityItemWithin.getItem().splitStack(1);
+			ItemStack containerToFill = entityItemWithin.getEntityItem().splitStack(1);
 			FluidContainerHelper.drainHandlerIntoContainer(fluidTank, fluidTank.getFluid(), containerToFill);
 
 			if (!FluidContainerHelper.isEmptyContainer(containerToFill))

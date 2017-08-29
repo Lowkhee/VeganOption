@@ -1,3 +1,5 @@
+//ext.config = loadConfig(file('build.properties'))
+
 buildscript {
 	repositories {
 		jcenter()
@@ -17,21 +19,51 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 minecraft {
-
-	runDir = "run"
-
-	coreMod = "squeek.veganoption.asm.ASMPlugin"
-
-	version = "13.20.1.2386"
+	version = "13.20.1.2386" //"${config.forge_version}"
 	
-	mappings = "snapshot_20161220"
+    runDir = "run" //"${config.run_dir}"
+	
+	mappings = "snapshot_20161220" //"${config.mcp_mappings}"
+
+	coreMod = "squeek.veganoption.asm.ASMPlugin" //"${config.core_mod}"
+	
+	modid = "veganoption"
+	
+	name="veganoption"
+	
+	
+	
+	//replace "\${mod_name}", "${config.mod_name}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${mod_id}", "${config.mod_id}"
+	//replaceIn "ModInfo.java"
+
+	//replace "\${mod_version}", "${config.mod_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_mc_version}", "${config.minecraft_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_forge_version}", "${config.forge_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_jei_version}", "${config.jei_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_waila_version}", "${config.waila_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_theoneprobe_version}", "${config.theoneprobe_version}"
+	//replaceIn "ModInfo.java"
 }
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-group = project.projectDir.name.toLowerCase()
-archivesBaseName = project.projectDir.name
+group = "squeek.veganoption" //"${config.mod_group}"
+archivesBaseName = "veganoption" // + "-mc" + "${config.minecraft_version}"
+version = "0.7.0-1.11.2-13.20.1.2386" 
 
 if (version == "unspecified")
 	version = "0.2.0"
@@ -171,3 +203,11 @@ if (curseApiKey) {
 		}
 	}
 }
+
+//static def loadConfig(File config) {
+//	def props = new Properties()
+//	config.withInputStream {
+//		stream -> props.load(stream)
+//	}
+//	return new ConfigSlurper().parse(props)
+//}

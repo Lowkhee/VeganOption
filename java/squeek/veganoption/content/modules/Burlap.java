@@ -34,31 +34,31 @@ public class Burlap implements IContentModule
 		burlap = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".burlap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "burlap");
+			.setRegistryName(ModInfo.MODID, "burlap");
 		GameRegistry.register(burlap);
 
 		burlapHelmet = (ItemArmor) new ItemArmor(ItemArmor.ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.HEAD)
 			.setUnlocalizedName(ModInfo.MODID + ".helmetBurlap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "helmetBurlap");
+			.setRegistryName(ModInfo.MODID, "helmetBurlap");
 		GameRegistry.register(burlapHelmet);
 
 		burlapChestplate = (ItemArmor) new ItemArmor(ItemArmor.ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.CHEST)
 			.setUnlocalizedName(ModInfo.MODID + ".chestplateBurlap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "chestplateBurlap");
+			.setRegistryName(ModInfo.MODID, "chestplateBurlap");
 		GameRegistry.register(burlapChestplate);
 
 		burlapLeggings = (ItemArmor) new ItemArmor(ItemArmor.ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.LEGS)
 			.setUnlocalizedName(ModInfo.MODID + ".leggingsBurlap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "leggingsBurlap");
+			.setRegistryName(ModInfo.MODID, "leggingsBurlap");
 		GameRegistry.register(burlapLeggings);
 
 		burlapBoots = (ItemArmor) new ItemArmor(ItemArmor.ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.FEET)
 			.setUnlocalizedName(ModInfo.MODID + ".bootsBurlap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "bootsBurlap");
+			.setRegistryName(ModInfo.MODID, "bootsBurlap");
 		GameRegistry.register(burlapBoots);
 	}
 

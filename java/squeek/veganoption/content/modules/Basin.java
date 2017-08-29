@@ -30,7 +30,7 @@ public class Basin implements IContentModule
 			.setHardness(2.5F)
 			.setUnlocalizedName(ModInfo.MODID + ".basin")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "basin");
+			.setRegistryName(ModInfo.MODID, "basin");
 		GameRegistry.register(basin);
 		GameRegistry.register(new ItemBlock(basin).setRegistryName(basin.getRegistryName()));
 		GameRegistry.registerTileEntity(TileEntityBasin.class, ModInfo.MODID + ".basin");

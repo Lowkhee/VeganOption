@@ -29,13 +29,13 @@ public class Resin implements IContentModule
 		resin = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".resin")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "resin");
+			.setRegistryName(ModInfo.MODID, "resin");
 		GameRegistry.register(resin);
 
 		rosin = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".rosin")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "rosin");
+			.setRegistryName(ModInfo.MODID, "rosin");
 		GameRegistry.register(rosin);
 	}
 

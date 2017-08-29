@@ -38,11 +38,11 @@ public class Soap implements IContentModule
 	@Override
 	public void create()
 	{
-		fluidLyeWater = new Fluid("lye_water", new ResourceLocation(ModInfo.MODID_LOWER, "blocks/lye_water_still"), new ResourceLocation(ModInfo.MODID_LOWER, "blocks/lye_water_flow"));
+		fluidLyeWater = new Fluid("lye_water", new ResourceLocation(ModInfo.MODID, "blocks/lye_water_still"), new ResourceLocation(ModInfo.MODID, "blocks/lye_water_flow"));
 		FluidRegistry.registerFluid(fluidLyeWater);
 		lyeWater = new BlockLyeWater(fluidLyeWater)
 			.setUnlocalizedName(ModInfo.MODID + ".lyeWater")
-			.setRegistryName(ModInfo.MODID_LOWER, "lyeWater");
+			.setRegistryName(ModInfo.MODID, "lyeWater");
 		fluidLyeWater.setBlock(lyeWater);
 		fluidLyeWater.setUnlocalizedName(lyeWater.getUnlocalizedName());
 		GameRegistry.register(lyeWater);
@@ -53,12 +53,12 @@ public class Soap implements IContentModule
 		soap = new ItemSoap()
 			.setUnlocalizedName(ModInfo.MODID + ".soap")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER + ":soap");
+			.setRegistryName(ModInfo.MODID + ":soap");
 		GameRegistry.register(soap);
 
 		UniversalBucket bucket = ForgeModContainer.getInstance().universalBucket;
-		bucketLyeWater = new ItemStack(bucket);
-		bucket.fill(bucketLyeWater, new FluidStack(fluidLyeWater, Fluid.BUCKET_VOLUME), true);
+		bucketLyeWater = UniversalBucket.getFilledBucket(bucket, fluidLyeWater);
+		bucketLyeWater.copy().getItem().setCreativeTab(VeganOption.creativeTab);
 	}
 
 	@Override
@@ -72,6 +72,7 @@ public class Soap implements IContentModule
 	public void recipes()
 	{
 		GameRegistry.addRecipe(new ShapelessOreRecipe(bucketLyeWater.copy(), new ItemStack(Items.WATER_BUCKET), ContentHelper.woodAshOreDict, ContentHelper.woodAshOreDict, ContentHelper.woodAshOreDict));
+		
 		Modifiers.crafting.addInputsToRemoveForOutput(bucketLyeWater.copy(), new ItemStack(Items.WATER_BUCKET));
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(soap),

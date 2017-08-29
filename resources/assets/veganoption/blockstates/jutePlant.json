@@ -2,6 +2,7 @@
 	"__comment": "growth stages 0-5 are for the bottom, and 6-10 are for the top.",
 	"forge_marker": 1,
 	"defaults": {
+		
 		"model": "tinted_cross"
 	},
 	"variants": {

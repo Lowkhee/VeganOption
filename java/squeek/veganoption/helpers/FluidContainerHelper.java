@@ -31,6 +31,7 @@ public class FluidContainerHelper
 		MinecraftForge.EVENT_BUS.register(new FluidContainerHelper());
 	}
 
+	@SuppressWarnings("deprecation")
 	protected static Method rayTraceMethod = ReflectionHelper.findMethod(Item.class, null, new String[]{"rayTrace", "func_77621_a", "a"}, World.class, EntityPlayer.class, boolean.class);
 
 	// fix non-water fluids being able to create water buckets
@@ -59,7 +60,7 @@ public class FluidContainerHelper
 	// and fixing non-water fluids being able to create water bottles
 	//
 	// note: this *could* be expanded to support all containers registered in the FluidContainerRegistry,
-	// but that is likely to cause unwanted behaviour due to containers being registered
+	// but that is likely to cause unwanted behavior due to containers being registered
 	// that are only intended to be filled via specific non-right-click methods (ex: TE florbs)
 	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)

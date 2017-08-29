@@ -38,7 +38,7 @@ public class DollsEye implements IContentModule
 			.setPotionEffect(new PotionEffect(MobEffects.POISON, 5, 0), 1F)
 			.setUnlocalizedName(ModInfo.MODID + ".dollsEye")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "dollsEye");
+			.setRegistryName(ModInfo.MODID, "dollsEye");
 		GameRegistry.register(dollsEye);
 	}
 
@@ -51,6 +51,7 @@ public class DollsEye implements IContentModule
 	@Override
 	public void recipes()
 	{
+		PotionHelper.registerPotionTypeConversion(PotionTypes.WATER, new PotionHelper.ItemPredicateInstance(dollsEye), PotionTypes.MUNDANE);
 		PotionHelper.registerPotionTypeConversion(PotionTypes.AWKWARD, new PotionHelper.ItemPredicateInstance(dollsEye), PotionTypes.POISON);
 
 		BlockSpecifier forestGrass = new BlockSpecifier(Blocks.TALLGRASS.getDefaultState().withProperty(BlockTallGrass.TYPE, BlockTallGrass.EnumType.GRASS), BlockTallGrass.TYPE)

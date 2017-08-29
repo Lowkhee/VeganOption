@@ -66,10 +66,10 @@ public class ItemFrozenBubble extends Item
 
 	public static boolean tryFillWithRawEnderFromWorld(EntityItem entityItem)
 	{
-		if (entityItem == null || entityItem.world.isRemote || entityItem.getItem().isEmpty())
+		if (entityItem == null || entityItem.world.isRemote || entityItem.getEntityItem().isEmpty())
 			return false;
 
-		if (!isFull(entityItem.getItem()))
+		if (!isFull(entityItem.getEntityItem()))
 		{
 			BlockPos fluidBlockPos = new BlockPos(MathHelper.floor(entityItem.posX), MathHelper.floor(entityItem.posY), MathHelper.floor(entityItem.posZ));
 			FluidStack consumedFluid = FluidHelper.consumeExactFluid(entityItem.world, fluidBlockPos, Ender.fluidRawEnder, FluidHelper.FINITE_FLUID_MB_PER_META);
@@ -77,18 +77,18 @@ public class ItemFrozenBubble extends Item
 			if (consumedFluid != null)
 			{
 				EntityItem entityItemToFill = entityItem;
-				ItemStack bubbleToFill = entityItemToFill.getItem();
+				ItemStack bubbleToFill = entityItemToFill.getEntityItem();
 
-				if (entityItemToFill.getItem().getCount() > 1)
+				if (entityItemToFill.getEntityItem().getCount() > 1)
 				{
-					bubbleToFill = entityItem.getItem().splitStack(1);
+					bubbleToFill = entityItem.getEntityItem().splitStack(1);
 					entityItemToFill = new EntityItem(entityItemToFill.world, entityItemToFill.posX, entityItemToFill.posY, entityItemToFill.posZ, bubbleToFill);
 					entityItemToFill.setPickupDelay(10);
 					entityItemToFill.world.spawnEntity(entityItemToFill);
 				}
 
 				ItemStack filledItemStack = fill(bubbleToFill, 1);
-				entityItemToFill.setItem(filledItemStack);
+				entityItemToFill.setEntityItemStack(filledItemStack);
 
 				return true;
 			}

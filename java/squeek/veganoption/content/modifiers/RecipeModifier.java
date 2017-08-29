@@ -11,15 +11,16 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import squeek.veganoption.VeganOption;
 import squeek.veganoption.helpers.MiscHelper;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.Map.Entry;
+import org.apache.logging.log4j.*;
 
 public class RecipeModifier
 {
+	private static final Logger Log = LogManager.getLogger(RecipeModifier.class.getCanonicalName());
 	// TODO: Split these different <ItemStack, String> maps into modules for more fine-grained control
 	public HashMap<ItemStack, String> itemToOreDictConversions = new HashMap<ItemStack, String>();
 	public HashMap<ItemStack, String> itemToOreDictConversionsForFoodOutputs = new HashMap<ItemStack, String>();
@@ -119,7 +120,7 @@ public class RecipeModifier
 
 		long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
 		String timeTakenString = "took " + (timeSpentInMilliseconds / 1000.0f) + " seconds";
-		VeganOption.Log.info("Replaced " + recipesConverted + " recipes with OreDictionary'd equivalents (" + timeTakenString + ")");
+		Log.log(Level.INFO, "Replaced " + recipesConverted + " recipes with OreDictionary'd equivalents (" + timeTakenString + ")");
 	}
 
 	public IRecipe convertRecipe(IRecipe recipe)

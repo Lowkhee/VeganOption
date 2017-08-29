@@ -39,7 +39,7 @@ public class Seitan implements IContentModule
 		washableWheat = new ItemWashableWheat()
 			.setUnlocalizedName(ModInfo.MODID)
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "washableWheat");
+			.setRegistryName(ModInfo.MODID, "washableWheat");
 		GameRegistry.register(washableWheat);
 		wheatFlourStack = new ItemStack(washableWheat, 1, ItemWashableWheat.META_FLOUR);
 		wheatDoughStack = new ItemStack(washableWheat, 1, ItemWashableWheat.META_DOUGH);
@@ -49,7 +49,7 @@ public class Seitan implements IContentModule
 		seitanCooked = new ItemFood(8, 0.8f, false)
 			.setUnlocalizedName(ModInfo.MODID + ".seitanCooked")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "seitanCooked");
+			.setRegistryName(ModInfo.MODID, "seitanCooked");
 		GameRegistry.register(seitanCooked);
 	}
 
@@ -102,13 +102,13 @@ public class Seitan implements IContentModule
 	public void clientSidePre()
 	{
 		ContentHelper.registerTypicalItemModel(seitanCooked);
-		ContentHelper.registerTypicalItemStackModel(seitanRawStack, ModInfo.MODID_LOWER + ":seitan_raw");
-		ContentHelper.registerTypicalItemStackModel(wheatFlourStack, ModInfo.MODID_LOWER + ":wheat_flour");
-		ContentHelper.registerTypicalItemStackModel(wheatDoughStack, ModInfo.MODID_LOWER + ":wheat_dough");
+		ContentHelper.registerTypicalItemStackModel(seitanRawStack, ModInfo.MODID + ":seitan_raw");
+		ContentHelper.registerTypicalItemStackModel(wheatFlourStack, ModInfo.MODID + ":wheat_flour");
+		ContentHelper.registerTypicalItemStackModel(wheatDoughStack, ModInfo.MODID + ":wheat_dough");
 
 		for (int meta = ItemWashableWheat.META_UNWASHED_START; meta < ItemWashableWheat.META_UNWASHED_END; meta++)
 		{
-			ModelLoader.setCustomModelResourceLocation(washableWheat, meta, new ModelResourceLocation(ModInfo.MODID_LOWER + ":seitan_unwashed", "inventory"));
+			ModelLoader.setCustomModelResourceLocation(washableWheat, meta, new ModelResourceLocation(ModInfo.MODID + ":seitan_unwashed", "inventory"));
 		}
 	}
 }

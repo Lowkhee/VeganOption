@@ -11,7 +11,7 @@ public class NetworkHelper
 {
 	public static EntityPlayer getSidedPlayer(MessageContext ctx)
 	{
-		return ctx.side == Side.SERVER ? ctx.getServerHandler().player : getClientPlayer();
+		return ctx.side == Side.SERVER ? ctx.getServerHandler().playerEntity : getClientPlayer();
 	}
 
 	@SideOnly(Side.CLIENT)

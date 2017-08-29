@@ -30,7 +30,7 @@ public class GuiComposter extends GuiContainer
 	protected IInventory inventory = null;
 	protected TileEntityComposter composter = null;
 	public static final ResourceLocation guiTexture = new ResourceLocation("textures/gui/container/generic_54.png");
-	public static final ResourceLocation guiComponents = new ResourceLocation(ModInfo.MODID_LOWER, "textures/gui/composter.png");
+	public static final ResourceLocation guiComponents = new ResourceLocation(ModInfo.MODID, "textures/gui/composter.png");
 	public int xStart;
 	public int yStart;
 	public int inventoryRows;
@@ -112,8 +112,9 @@ public class GuiComposter extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		this.fontRenderer.drawString(this.inventory.hasCustomName() ? this.inventory.getName() : I18n.format(this.inventory.getName()), 8, 6, ColorHelper.DEFAULT_TEXT_COLOR);
-		this.fontRenderer.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName() : I18n.format(this.playerInventory.getName()), 8, this.ySize - 96 + 2, ColorHelper.DEFAULT_TEXT_COLOR);
+		//changed
+		this.drawString(mc.fontRendererObj, this.inventory.hasCustomName() ? this.inventory.getName() : I18n.format(this.inventory.getName()), 8, 6, ColorHelper.DEFAULT_TEXT_COLOR);
+		this.drawString(mc.fontRendererObj, this.playerInventory.hasCustomName() ? this.playerInventory.getName() : I18n.format(this.playerInventory.getName()), 8, this.ySize - 96 + 2, ColorHelper.DEFAULT_TEXT_COLOR);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(guiComponents);
@@ -126,7 +127,8 @@ public class GuiComposter extends GuiContainer
 
 	public List<String> getRobustToolTip(String identifier, Object... args)
 	{
-		List<String> toolTipText = new ArrayList<String>(fontRenderer.listFormattedStringToWidth(LangHelper.translate(identifier + ".desc").replaceAll("\\\\n", String.valueOf('\n')), xSize));
+		//changed
+		List<String> toolTipText = new ArrayList<String>(fontRendererObj.listFormattedStringToWidth(LangHelper.translate(identifier + ".desc").replaceAll("\\\\n", String.valueOf('\n')), xSize));
 		toolTipText.add(0, LangHelper.translate(identifier, args));
 		for (int i = 1; i < toolTipText.size(); ++i)
 		{
@@ -142,15 +144,15 @@ public class GuiComposter extends GuiContainer
 
 		if (isMouseOverTumbleButton(mouseX, mouseY))
 		{
-			drawHoveringText(getRobustToolTip("gui.composter.tumble"), mouseX, mouseY, fontRenderer);
+			drawHoveringText(getRobustToolTip("gui.composter.tumble"), mouseX, mouseY, fontRendererObj);
 		}
 		else if (isMouseOverTemperature(mouseX, mouseY))
 		{
-			drawHoveringText(getRobustToolTip("gui.composter.temperature", Math.round(composter.getCompostTemperature()) + DEGREE_SYMBOL + "C"), mouseX, mouseY, fontRenderer);
+			drawHoveringText(getRobustToolTip("gui.composter.temperature", Math.round(composter.getCompostTemperature()) + DEGREE_SYMBOL + "C"), mouseX, mouseY, fontRendererObj);
 		}
 		else if (isMouseOverCompostingPercent(mouseX, mouseY))
 		{
-			drawHoveringText(getRobustToolTip("gui.composter.composting", ((int) (composter.getCompostingPercent() * 100)) + "%"), mouseX, mouseY, fontRenderer);
+			drawHoveringText(getRobustToolTip("gui.composter.composting", ((int) (composter.getCompostingPercent() * 100)) + "%"), mouseX, mouseY, fontRendererObj);
 		}
 	}
 

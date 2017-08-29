@@ -28,8 +28,7 @@ public class Fossils implements IContentModule
 	{
 		// bones as a rare drop from stone
 		Modifiers.drops.addDropsToBlock(
-			new BlockSpecifier(Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.STONE), BlockStone.VARIANT),
-			new DropSpecifier(new ItemStack(Items.BONE), 0.01f, 1, 2)
+			new BlockSpecifier(Blocks.STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.STONE), BlockStone.VARIANT), new DropSpecifier(new ItemStack(Items.BONE), 0.01f, 1, 2)
 		);
 	}
 

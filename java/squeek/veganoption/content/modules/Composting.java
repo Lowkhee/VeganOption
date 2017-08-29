@@ -41,7 +41,7 @@ public class Composting implements IContentModule
 			.setHardness(2.5F)
 			.setUnlocalizedName(ModInfo.MODID + ".composter")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "composter");
+			.setRegistryName(ModInfo.MODID, "composter");
 		GameRegistry.register(composter);
 		GameRegistry.register(new ItemBlock(composter).setRegistryName(composter.getRegistryName()));
 		GameRegistry.registerTileEntity(TileEntityComposter.class, ModInfo.MODID + ".composter");
@@ -50,20 +50,20 @@ public class Composting implements IContentModule
 			.setPotionEffect(new PotionEffect(MobEffects.HUNGER, 30, 0), 0.8F)
 			.setUnlocalizedName(ModInfo.MODID + ".rottenPlants")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "rottenPlants");
+			.setRegistryName(ModInfo.MODID, "rottenPlants");
 		GameRegistry.register(rottenPlants);
 
 		fertilizer = new ItemFertilizer()
 			.setUnlocalizedName(ModInfo.MODID + ".fertilizer")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "fertilizer");
+			.setRegistryName(ModInfo.MODID, "fertilizer");
 		GameRegistry.register(fertilizer);
 
 		compost = new BlockCompost()
 			.setHardness(0.5F)
 			.setUnlocalizedName(ModInfo.MODID + ".compost")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "compost");
+			.setRegistryName(ModInfo.MODID, "compost");
 		GameRegistry.register(compost);
 		GameRegistry.register(new ItemBlock(compost).setRegistryName(compost.getRegistryName()));
 	}

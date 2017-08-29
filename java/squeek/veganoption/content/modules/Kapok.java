@@ -1,5 +1,6 @@
 package squeek.veganoption.content.modules;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
@@ -11,6 +12,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemCloth;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,14 +40,14 @@ public class Kapok implements IContentModule
 		kapokTuft = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".kapokTuft")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "kapokTuft");
+			.setRegistryName(ModInfo.MODID, "kapokTuft");
 		GameRegistry.register(kapokTuft);
 
 		kapokBlock = (BlockColored) new BlockKapok(Material.CLOTH)
 			.setHardness(0.8F)
 			.setCreativeTab(VeganOption.creativeTab)
 			.setUnlocalizedName(ModInfo.MODID + ".kapok")
-			.setRegistryName(ModInfo.MODID_LOWER, "kapok");
+			.setRegistryName(ModInfo.MODID, "kapok");
 		GameRegistry.register(kapokBlock);
 		GameRegistry.register(new ItemCloth(kapokBlock).setRegistryName(kapokBlock.getRegistryName()));
 	}
@@ -80,8 +82,15 @@ public class Kapok implements IContentModule
 		{
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(kapokBlock, 1, 15 - i), "dye" + ConstantHelper.dyeColors[i], new ItemStack(kapokBlock)));
 		}
-
-		BlockSpecifier jungleLeavesSpecifier = new BlockSpecifier(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE), BlockOldLeaf.VARIANT);
+	
+		//BlockPlanks.EnumType.JUNGLE.getMetadata()
+	
+		//Block block = Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE).getBlock();
+		BlockSpecifier jungleLeavesSpecifier = new BlockSpecifier(Blocks.LEAVES.getDefaultState()
+				.withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)
+				.withProperty(BlockOldLeaf.CHECK_DECAY, Boolean.valueOf(false))		//false in order to get correct
+				.withProperty(BlockOldLeaf.DECAYABLE, Boolean.valueOf(true))		//same
+				, BlockOldLeaf.VARIANT);
 		Modifiers.drops.addDropsToBlock(jungleLeavesSpecifier, new DropSpecifier(new ItemStack(kapokTuft), 0.07f, 1, 2));
 
 		GameRegistry.addShapedRecipe(new ItemStack(Items.STRING), "~~~", '~', kapokTuft);

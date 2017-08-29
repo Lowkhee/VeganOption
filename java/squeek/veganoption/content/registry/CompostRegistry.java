@@ -1,11 +1,11 @@
 package squeek.veganoption.content.registry;
 
+import org.apache.logging.log4j.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import squeek.veganoption.VeganOption;
 import squeek.veganoption.helpers.MiscHelper;
 
 import java.util.ArrayList;
@@ -13,6 +13,8 @@ import java.util.List;
 
 public class CompostRegistry
 {
+	private static final Logger Log = LogManager.getLogger(CompostRegistry.class.getCanonicalName());
+	
 	public static List<ItemStack> browns = new ArrayList<ItemStack>();
 	public static List<ItemStack> greens = new ArrayList<ItemStack>();
 	public static List<FoodSpecifier> uncompostableFoods = new ArrayList<FoodSpecifier>();
@@ -36,7 +38,7 @@ public class CompostRegistry
 
 		long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
 		String timeTakenString = "took " + (timeSpentInMilliseconds / 1000.0f) + " seconds";
-		VeganOption.Log.info("Found and registered " + numRegistered + " compostable foods (" + timeTakenString + ")");
+		Log.log(Level.INFO, "Found and registered " + numRegistered + " compostable foods (" + timeTakenString + ")");
 	}
 
 	public abstract static class FoodSpecifier

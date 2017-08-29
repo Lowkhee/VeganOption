@@ -17,7 +17,7 @@ public class CreativeTabProxy implements IContentModule
 	{
 		proxyItem = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".creative_tab")
-			.setRegistryName(ModInfo.MODID_LOWER, "creative_tab");
+			.setRegistryName(ModInfo.MODID, "creative_tab");
 		GameRegistry.register(proxyItem);
 		VeganOption.creativeTab = CreativeTabHelper.createTab(ModInfo.MODID, proxyItem);
 	}

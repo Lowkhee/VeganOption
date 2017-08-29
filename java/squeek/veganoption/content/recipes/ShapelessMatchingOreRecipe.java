@@ -8,6 +8,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import squeek.veganoption.ModInfo;
+import org.apache.logging.log4j.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +24,12 @@ import java.util.Map.Entry;
  */
 public class ShapelessMatchingOreRecipe extends ShapelessOreRecipe
 {
+	private static final Logger Log = LogManager.getLogger(ShapelessMatchingOreRecipe.class.getCanonicalName());
 	public Map<ArrayList<ItemStack>, Integer> requiredMatchingStacksByOreDictStacks = new HashMap<ArrayList<ItemStack>, Integer>();
 
 	static
 	{
-		RecipeSorter.register(ModInfo.MODID_LOWER + ":shapelessmatchingore", ShapelessMatchingOreRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(ModInfo.MODID + ":shapelessmatchingore", ShapelessMatchingOreRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,11 +37,12 @@ public class ShapelessMatchingOreRecipe extends ShapelessOreRecipe
 	{
 		super(result, recipe);
 
-		NonNullList<Object> inputs = getInput();
+		NonNullList<Object> inputs = this.getInput();
 
 		for (int i = 0; i < inputs.size(); i++)
 		{
 			Object input = inputs.get(i);
+			//Log.log(squeek.veganoption.ModInfo.debugLevel,"Input: " + input.toString());
 
 			if (!(input instanceof ArrayList))
 				continue;
@@ -52,13 +55,14 @@ public class ShapelessMatchingOreRecipe extends ShapelessOreRecipe
 					continue;
 
 				Object testInput = inputs.get(j);
+				//Log.log(squeek.veganoption.ModInfo.debugLevel,"Test Input: " + testInput.toString());
 
 				if (testInput == input)
 				{
 					numRequiredMatches++;
 				}
 			}
-
+			//Log.log(squeek.veganoption.ModInfo.debugLevel,"Required Matches: " + numRequiredMatches);
 			if (numRequiredMatches > 1)
 			{
 				requiredMatchingStacksByOreDictStacks.put((ArrayList<ItemStack>) input, numRequiredMatches);

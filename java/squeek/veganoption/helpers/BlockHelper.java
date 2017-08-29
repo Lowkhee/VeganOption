@@ -1,8 +1,11 @@
 package squeek.veganoption.helpers;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockOldLeaf;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,23 +17,40 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fluids.BlockFluidFinite;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+//import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+//import java.lang.reflect.InvocationTargetException;
+//import java.lang.reflect.Method;
 import java.util.*;
 
-public class BlockHelper
+public class BlockHelper 
 {
 	public static final float BLOCK_HARDNESS_UNBREAKABLE = -1.0f;
 
-	private static final Method createStackedBlock = ReflectionHelper.findMethod(Block.class, null, new String[]{"createStackedBlock", "func_180643_i"}, IBlockState.class);
-
+	//Deprecated + invoke = crash
+	//private static final Method createStackedBlock = ReflectionHelper.findMethod(Block.class, null, new String[]{"createStackedBlock", "func_180643_i"}, IBlockState.class);
+	
 	public static ItemStack blockStateToItemStack(IBlockState state)
 	{
-		try
+		//from protected method Block#getSilkTouchDrop
+		Block block = state.getBlock();
+		Item item = Item.getItemFromBlock(block);
+		//item.set
+        int i = 0;
+
+        //if(block instanceof BlockOldLeaf)
+        //	i = ((BlockOldLeaf)block).getMetaFromState(state); //BlockPlanks.EnumType.JUNGLE.getMetadata();
+        //else 
+        if (item.getHasSubtypes())
+        {
+            i = block.getMetaFromState(state);
+        }
+
+        return new ItemStack(item, 1, i);
+		/*try
 		{
-			return (ItemStack) createStackedBlock.invoke(state.getBlock(), state);
+			
+			//return (ItemStack) createStackedBlock.invoke(state.getBlock(), state);
 		}
 		catch (IllegalAccessException e)
 		{
@@ -39,7 +59,7 @@ public class BlockHelper
 		catch (InvocationTargetException e)
 		{
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	public static boolean isMaterial(World world, BlockPos blockPos, Material material)

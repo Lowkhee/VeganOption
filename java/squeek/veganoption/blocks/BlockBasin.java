@@ -263,7 +263,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 
 				for (AxisAlignedBB AABB : AABBs)
 				{
-					if (AABB != null && collidingAABB.intersects(AABB))
+					if (AABB != null && collidingAABB.intersectsWith(AABB))
 					{
 						collidingBoundingBoxes.add(AABB);
 					}
@@ -274,7 +274,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		{
 			AxisAlignedBB AABB = getOuterBoundingBox(world, pos.getX(), pos.getY(), pos.getZ());
 
-			if (AABB != null && collidingAABB.intersects(AABB))
+			if (AABB != null && collidingAABB.intersectsWith(AABB))
 			{
 				collidingBoundingBoxes.add(AABB);
 			}

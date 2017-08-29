@@ -22,10 +22,10 @@ public class RenderComposter extends TileEntitySpecialRenderer<TileEntityCompost
 	private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
 	private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
 	private static final ResourceLocation[] TEXTURE_TEMPERATURE_OVERLAYS = new ResourceLocation[]{
-		new ResourceLocation(ModInfo.MODID_LOWER, "textures/entity/composter/temperature_overlay_blue.png"),
-		new ResourceLocation(ModInfo.MODID_LOWER, "textures/entity/composter/temperature_overlay_yellow.png"),
-		new ResourceLocation(ModInfo.MODID_LOWER, "textures/entity/composter/temperature_overlay_orange.png"),
-		new ResourceLocation(ModInfo.MODID_LOWER, "textures/entity/composter/temperature_overlay_red.png")
+		new ResourceLocation(ModInfo.MODID, "textures/entity/composter/temperature_overlay_blue.png"),
+		new ResourceLocation(ModInfo.MODID, "textures/entity/composter/temperature_overlay_yellow.png"),
+		new ResourceLocation(ModInfo.MODID, "textures/entity/composter/temperature_overlay_orange.png"),
+		new ResourceLocation(ModInfo.MODID, "textures/entity/composter/temperature_overlay_red.png")
 	};
 	private ModelChest modelChest = new ModelChest();
 	private boolean isChristmas;
@@ -70,6 +70,8 @@ public class RenderComposter extends TileEntitySpecialRenderer<TileEntityCompost
 				break;
 			case WEST:
 				rotation = -90;
+				break;
+			default:
 				break;
 		}
 

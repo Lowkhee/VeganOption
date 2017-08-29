@@ -25,7 +25,7 @@ public class Feather implements IContentModule
 		fauxFeather = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".fauxFeather")
 			.setCreativeTab(VeganOption.creativeTab)
-			.setRegistryName(ModInfo.MODID_LOWER, "fauxFeather");
+			.setRegistryName(ModInfo.MODID, "fauxFeather");
 		GameRegistry.register(fauxFeather);
 	}
 

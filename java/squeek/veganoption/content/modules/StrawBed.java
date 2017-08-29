@@ -27,12 +27,12 @@ public class StrawBed implements IContentModule
 			.setHardness(0.2F)
 			.setCreativeTab(VeganOption.creativeTab)
 			.setUnlocalizedName(ModInfo.MODID + ".bedStraw")
-			.setRegistryName(ModInfo.MODID_LOWER, "bedStraw");
+			.setRegistryName(ModInfo.MODID, "bedStraw");
 		bedStrawItem = (ItemBedGeneric) new ItemBedStraw(bedStrawBlock)
 			.setMaxStackSize(1)
 			.setCreativeTab(VeganOption.creativeTab)
 			.setUnlocalizedName(ModInfo.MODID + ".bedStraw")
-			.setRegistryName(ModInfo.MODID_LOWER, "bedStraw");
+			.setRegistryName(ModInfo.MODID, "bedStraw");
 		bedStrawBlock.setBedItem(bedStrawItem);
 		GameRegistry.register(bedStrawBlock);
 		GameRegistry.register(bedStrawItem);
