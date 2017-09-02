@@ -13,9 +13,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import squeek.veganoption.ModInfo;
 import squeek.veganoption.blocks.BlockBasin;
 import squeek.veganoption.content.modules.Basin;
 import squeek.veganoption.helpers.FluidContainerHelper;
@@ -24,27 +26,46 @@ import squeek.veganoption.helpers.MiscHelper;
 import squeek.veganoption.helpers.WorldHelper;
 
 import javax.annotation.Nonnull;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class TileEntityBasin extends TileEntity implements ITickable
 {
-	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*5);
+	protected static final Logger Log = LogManager.getLogger(TileEntityBasin.class.getCanonicalName());
+	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*10); //10000=10 buckets
 	protected boolean isPowered = false;
 	protected boolean fluidConsumeStopped = true;
-	protected int ticksUntilNextFluidConsume = FLUID_CONSUME_TICK_PERIOD;
+	protected int ticksUntilNextFluidConsume = FLUID_CONSUME_TICK_PERIOD; 
 	protected int ticksUntilNextContainerFill = CONTAINER_FILL_TICK_PERIOD;
 
 	public static int FLUID_CONSUME_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
 	public static int CONTAINER_FILL_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
-
+	
+	//change to block update? when block update at mouth, consume all, unless rawender (1/4)? may be difficult if basin is for general use
+	//possibly add variable fluidStability (1..7, 1/7..1) to pair list <fluid,fluidStability>, 1 = very unstable = only 1/7 of fluid makes it
+	public static enum STABILITY {UNSTABLE, LOWER, LOW, TOLERANT, HIGH, HIGHER, STABLE};
+	//STABILITY.TOLERANT.ordinal() + 1;
+	
+	//when neighbor block changes at the basin block -> is block on facing intake of the basin? -> is block of type fluid? -> is fluid the same type or basin type null? -> is the basin full? -> 
+	//can the basin consume entire block? -> yes, add liquid and change block to air -> no, consume amount to fill and dissovle remaining
+	//public boolean updateFluid(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	//{
+		
+	//}
+	
+	
 	/*
 	 * Updating
 	 */
 	@Override
 	public void update()
-	{
+	{ 
 		if (world.isRemote)
 			return;
 

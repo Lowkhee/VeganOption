@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -26,6 +28,8 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 
 public class FluidContainerHelper
 {
+	private static boolean eventCanceled = false;
+	
 	public static void init()
 	{
 		MinecraftForge.EVENT_BUS.register(new FluidContainerHelper());
@@ -98,13 +102,13 @@ public class FluidContainerHelper
 		BlockPos pos = rayTraceResult.getBlockPos();
 		Block block = world.getBlockState(pos).getBlock();
 
-		// raw ender is not bottle fillable
-		if (block == Ender.rawEnder)
-		{
-			event.setCanceled(true);
-			event.setResult(Event.Result.DENY);
-			return;
-		}
+		// raw ender is not bottle fillable - unnecessary as rawEnder does not have a bottle container
+		//if (block == Ender.rawEnder)
+		//{
+		//	event.setCanceled(true);
+		//	event.setResult(Event.Result.DENY);
+		//	return;
+		//}
 
 		if (!(block instanceof BlockFluidClassic))
 			return;
@@ -123,6 +127,7 @@ public class FluidContainerHelper
 		// Material.water to actually have the properties of a liquid...
 		if (!didFill)
 		{
+			eventCanceled = true;
 			event.setCanceled(true);
 			event.setResult(Event.Result.DENY);
 		}
@@ -131,6 +136,17 @@ public class FluidContainerHelper
 			world.setBlockToAir(pos);
 		}
 	}
+	
+	//Prevents an Item in the right hand from being used (such as a glass bottle)
+	@SubscribeEvent
+    public void playerRightClickItem(PlayerInteractEvent.RightClickItem event)
+    {
+		if(eventCanceled)
+		{
+			event.setCanceled(true);
+			eventCanceled = false;
+		}
+    }
 
 	public static boolean isFluidContainer(ItemStack container)
 	{

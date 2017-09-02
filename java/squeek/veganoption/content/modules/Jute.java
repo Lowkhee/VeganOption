@@ -3,6 +3,7 @@ package squeek.veganoption.content.modules;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -72,7 +73,10 @@ public class Jute implements IContentModule
 		GameRegistry.register(juteBundled);
 		GameRegistry.register(new ItemBlock(juteBundled).setRegistryName(juteBundled.getRegistryName()));
 		
-		(new ItemStack(juteBundled.getBlockState().getValidStates().get(3).getBlock())).copy().getItem().setCreativeTab(VeganOption.creativeTab);
+		//attempting to create a retted stage for the creative tab
+		//BlockStateContainer juteBundleRetted = juteBundled.createBlockState();
+		//juteBundleRetted.
+		//(new ItemStack(juteBundled.getBlockState().getValidStates().get(3).getBlock())).copy().getItem().setCreativeTab(VeganOption.creativeTab);
 
 		jutePlant = new BlockJutePlant()
 			.setUnlocalizedName(ModInfo.MODID + ".jutePlant")

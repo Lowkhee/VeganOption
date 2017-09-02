@@ -7,12 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.entity.Entity;
+import net.minecraftforge.event.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 
 
@@ -73,7 +80,16 @@ public abstract class BottleRegistry
         {
             this.data = data.copy();
         }
+        
+      //called when bottle click on an Item
+       // @SubscribeEvent
+        //public void bottleRightClickItem(PlayerInteractEvent.RightClickItem event)
+        //{
+        //	event.setCanceled(true);
+        //}
     }
+    
+
     
 }
 

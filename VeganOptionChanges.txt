@@ -21,5 +21,41 @@ Vegan Option
 20. DONE(see #8): In order to get the correct meta in Kapok.java for Jungle leaves, properties: .withProperty(BlockOldLeaf.CHECK_DECAY, Boolean.valueOf(false)).withProperty(BlockOldLeaf.DECAYABLE, Boolean.valueOf(true)) need to be set, mainly CHECK_DECAY=false
 21. ~~Create advanced multi block to include mashing(piston), pressurizing(pressure plate), mixing(dough)
 22. ~~add tofu as option
-23. !!!Basin: raw ender - falls outide the container 1 block below rift - directly under(0 blocks below) does nothing
-24. Make frozenbubble directly usable on basin?
+23. !!!Basin: change basin to have fluid stability check, certain fluids should not flow out - bucket/bottle not usable on basin, fill or empty --- DONE: see#27 1 block below rift - directly under(0 blocks below) does nothing -does not create full rawender block
+24. ~~~Make frozenbubble directly usable on basin?
+25. Done: raw ender should be a full block - is full when contained
+26. DONE: glassbottle pickup veg oil, inks, soap solution, lye, rawender, milk = water bottle - PlayerControllerMP.class call net.minecraftforge.common.ForgeHooks.onItemRightClickAction(player, stack); results in NULL instead of PASS/DENY - the problem is a player interact with block(fluid) checks the variant item(fluid), and results in a water bottle - resolved by creating a new event FluidContainerHelper.playerRightClickItem
+27. DONE: see#23 - changed raw ender to spawn at block below rift-> then to flow to the lowest solid block, both cause block update->disovle fluid if not full bucket - see BlockRawEnder and BlockEnderRift
+28. ~~~make basin usable with pipes from other mods
+29. ~~~see#23-basin - powering block changes direction of top/intake - 
+30. !BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
+31. !RenderBasin#renderTileEntity is called continously, is it necessary?
+32. DONE:see#29-placing basin next to power source doesnt update is_powered(open), only when adding powersource or doing blockupdate around it- onBlockAdded was not changing the actual blockstate
+33. !BlockBasin has a constant update to isSideSolid (to check powered), possibly change to check during blockupdate 
+34. !!!Basin cause rawender to not dissolve? recheck once basin conversion complete
+
+
+
+fixed
+26
+27
+25
+32
+
+Updates:
+1. Basin block "top"(intake) can now be placed any direction (UDNSEW).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

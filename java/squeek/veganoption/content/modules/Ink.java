@@ -21,6 +21,7 @@ import squeek.veganoption.content.ContentHelper;
 import squeek.veganoption.content.IContentModule;
 import squeek.veganoption.content.Modifiers;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
+import squeek.veganoption.content.registry.BottleRegistry;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
 
@@ -61,7 +62,8 @@ public class Ink implements IContentModule
 		GameRegistry.register(new ItemBlock(blackInk).setRegistryName(blackInk.getRegistryName()));
 
 		//A: type of fluid and amount B: bottle when full C: bottle when empty
-		//FluidContainerRegistry.registerFluidContainer(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk), new ItemStack(blackVegetableOilInk.getContainerItem()));
+		//blackVegetableOilInk.
+		BottleRegistry.registerFluidBottle(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk));
 		//FluidStack fluidStack = new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME);
 		//ItemStack bottle = new ItemStack(blackVegetableOilInk);
 		//UniversalBucket bottle = new UniversalBucket(Fluid.BUCKET_VOLUME, new ItemStack(blackVegetableOilInk.getContainerItem()), false);

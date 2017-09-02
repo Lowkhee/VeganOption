@@ -8,27 +8,41 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import squeek.veganoption.blocks.tiles.TileEntityBasin;
 import squeek.veganoption.helpers.BlockHelper;
 import squeek.veganoption.helpers.LangHelper;
+import squeek.veganoption.blocks.tiles.TileEntityBasin;
 
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")
@@ -36,6 +50,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 {
 	public static final PropertyBool IS_OPEN = PropertyBool.create("is_open");
 	public static final double SIDE_WIDTH = 0.125D;
+	public static final PropertyDirection FACING = PropertyDirection.create("facing",Lists.newArrayList(EnumFacing.values()));
 
 	public BlockBasin(Material material)
 	{
@@ -47,9 +62,10 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	@Override
 	public BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, IS_OPEN);
+		return new BlockStateContainer(this, IS_OPEN, FACING);
 	}
-
+	
+	//called recreating, breaking
 	@Nonnull
 	@Override
 	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos)
@@ -60,7 +76,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		{
 			open = ((TileEntityBasin) tile).isOpen();
 		}
-		return state.withProperty(IS_OPEN, open);
+		return state.withProperty(IS_OPEN, open).withProperty(FACING, (EnumFacing)state.getProperties().get(FACING));
 	}
 
 	@Nonnull
@@ -89,12 +105,12 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	}
 
 	/*
-	 * Misc properties
+	 * Misc properties - 
 	 */
 	@Override
 	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
 	{
-		if (side != EnumFacing.UP)
+		if (side != state.getProperties().get(FACING))
 			return true;
 
 		TileEntity tile = world.getTileEntity(pos);
@@ -121,20 +137,33 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 			((TileEntityBasin) tile).scheduleFluidConsume();
 		}
 	}
+	
+	//called first on block placement
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		EnumFacing facing = placer.getLookVec().yCoord <= -.8 ? EnumFacing.UP : placer.getLookVec().yCoord >= .8 ? EnumFacing.DOWN : placer.getHorizontalFacing().getOpposite();
+		boolean powered = worldIn.isBlockPowered(pos);
+		worldIn.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if (tile instanceof TileEntityBasin)
+		{
+			((TileEntityBasin) tile).setPowered(powered);
+			((TileEntityBasin) tile).scheduleFluidConsume();
+		}
+    }
 
+	//called after onBlockPlacedBy
 	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
 		super.onBlockAdded(world, pos, state);
 
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityBasin)
-		{
-			((TileEntityBasin) tile).setPowered(world.isBlockPowered(pos));
-			((TileEntityBasin) tile).scheduleFluidConsume();
-		}
+		
 	}
 
+	//called when player interacts (right/left click?)
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -242,9 +271,10 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB collidingAABB, @Nonnull List<AxisAlignedBB> collidingBoundingBoxes, Entity collidingEntity, boolean p_185477_7_)
+	public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB collidingAABB, @Nonnull List<AxisAlignedBB> collidingBoundingBoxes, Entity collidingEntity, boolean unused)
 	{
-		// hack...
+		// hack... ??? what is the point of this Override? Used to add collision to the top? seems to be randomly called being within vicinity, more efficient way? why not setBoundingBox when block created
+		//added to a method variable which resets on each call
 		// this function is called with a null entity in World.isBlockFullCube
 		if (collidingEntity == null)
 			return;
@@ -341,4 +371,5 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		probeInfo.text(LangHelper.translate("info.basin." + (basin.isPowered() ? "open" : "closed")));
 
 	}
+	
 }

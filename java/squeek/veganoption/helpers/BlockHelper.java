@@ -27,7 +27,7 @@ public class BlockHelper
 {
 	public static final float BLOCK_HARDNESS_UNBREAKABLE = -1.0f;
 
-	//Deprecated + invoke = crash
+	//Deprecated + invoke = crash, This only seems true during launch, not in-game
 	//private static final Method createStackedBlock = ReflectionHelper.findMethod(Block.class, null, new String[]{"createStackedBlock", "func_180643_i"}, IBlockState.class);
 	
 	public static ItemStack blockStateToItemStack(IBlockState state)
@@ -38,9 +38,6 @@ public class BlockHelper
 		//item.set
         int i = 0;
 
-        //if(block instanceof BlockOldLeaf)
-        //	i = ((BlockOldLeaf)block).getMetaFromState(state); //BlockPlanks.EnumType.JUNGLE.getMetadata();
-        //else 
         if (item.getHasSubtypes())
         {
             i = block.getMetaFromState(state);
@@ -48,8 +45,7 @@ public class BlockHelper
 
         return new ItemStack(item, 1, i);
 		/*try
-		{
-			
+		{			
 			//return (ItemStack) createStackedBlock.invoke(state.getBlock(), state);
 		}
 		catch (IllegalAccessException e)
@@ -60,6 +56,15 @@ public class BlockHelper
 		{
 			throw new RuntimeException(e);
 		}*/
+	}
+	
+	//search starts from the block adjacent to fromBlockPos in the direction specified - will only check up to 256 blocks away
+	public static BlockPos findFirstSolidBlock(World world, BlockPos fromBlockPos, EnumFacing direction)
+	{
+		BlockPos blockToCheck = fromBlockPos.offset(direction);
+		for(int i = 1; i <= 256 && !(world.getBlockState(fromBlockPos).getMaterial().blocksMovement()); i++)
+			blockToCheck = blockToCheck.offset(direction);
+		return blockToCheck;
 	}
 
 	public static boolean isMaterial(World world, BlockPos blockPos, Material material)

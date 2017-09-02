@@ -11,10 +11,21 @@
 			"true": {
 				"textures": {
 					"top": "veganoption:blocks/basin_top_open"
-				}
-			},
+						}
+					},
 			"false": {}
 		},
+		"facing": {
+					"down": {"model": "veganoption:basin", "x": 180},
+					"east": {"model": "veganoption:basin", "x": 90, "y": 90},
+					"north": {"model": "veganoption:basin", "x": 90},
+					"south": {"model": "veganoption:basin", "x": 270},
+					"up": {"model": "veganoption:basin", "x": 0},
+					"west": {"model": "veganoption:basin", "x": -90, "y": 90}	
+			
+		},
+		
 		"inventory": [{}]
+		
 	}
 }

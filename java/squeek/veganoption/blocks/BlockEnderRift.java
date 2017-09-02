@@ -95,7 +95,14 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 
 				if (!world.isDaytime())
 				{
-					world.setBlockState(belowBlockPos, Ender.rawEnder.getDefaultState().withProperty(BlockFluidBase.LEVEL, 7));
+					//get a list of air blocks below the rift -> set flow to second to last air block -> create a raw ender source block at last airblock
+					BlockPos blockRawEnderPos = (BlockHelper.findFirstSolidBlock(world, pos, EnumFacing.DOWN)).offset(EnumFacing.UP);
+					IBlockState rawEnderBlock = Ender.rawEnder.getDefaultState().withProperty(BlockFluidBase.LEVEL, 7);
+					world.setBlockState(belowBlockPos, rawEnderBlock, 1); //block update below the rift
+					//may not be necessary
+					((BlockRawEnder)rawEnderBlock.getBlock()).tryToFlowVerticallyInto(world, blockRawEnderPos, 1000);
+					world.setBlockState(blockRawEnderPos, Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
+					
 				}
 				else
 				{

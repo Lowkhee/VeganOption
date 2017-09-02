@@ -49,38 +49,26 @@ public class VeganOption
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		ContentModuleHandler.preInit();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "pre-init Content complete");
 		IntegrationHandler.preInit();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "pre-init Integration complete");
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		FluidContainerHelper.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init fluid complete");
 		GuiHelper.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init gui complete");
 		TooltipHelper.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init tooltip complete");
 		NetworkHandler.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init network complete");
 		ContentModuleHandler.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init content complete");
 		IntegrationHandler.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init integration complete");
 		PistonCraftingHandler.init();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "init piston complete");
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		ContentModuleHandler.postInit();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "ContentModuleHandler.postInit() complete");
 		IntegrationHandler.postInit();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "IntegrationHandler.postInit() complete");
 		Modifiers.recipes.replaceRecipes();
-		VeganOption.Log.log(squeek.veganoption.ModInfo.debugLevel, "Modifiers.recipes.replaceRecipes() complete");
 	}
 }
