@@ -27,6 +27,7 @@ import squeek.veganoption.content.modifiers.DropsModifier.DropSpecifier;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
+import squeek.veganoption.helpers.FluidHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +62,7 @@ public class VegetableOil implements IContentModule
 		fluidVegetableOil.setUnlocalizedName(fluidBlockVegetableOil.getUnlocalizedName());
 		GameRegistry.register(fluidBlockVegetableOil);
 		GameRegistry.register(new ItemBlock(fluidBlockVegetableOil).setRegistryName(fluidBlockVegetableOil.getRegistryName()));
-
+		
 		oilVegetable = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".oilVegetable")
 			.setCreativeTab(VeganOption.creativeTab)

@@ -88,7 +88,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 		BlockPos belowBlockPos = pos.down();
 		if (BlockHelper.isWater(world, aboveBlockPos) && world.getBlockState(belowBlockPos).getBlock().isReplaceable(world, belowBlockPos))
 		{
-			BlockPos sourceBlockToConsume = BlockHelper.followWaterStreamToSourceBlock(world, aboveBlockPos);
+			BlockPos sourceBlockToConsume = BlockHelper.followWaterStreamToSourceBlock(world, pos, aboveBlockPos);
 			if (sourceBlockToConsume != null)
 			{
 				world.setBlockToAir(sourceBlockToConsume);
@@ -98,10 +98,10 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 					//get a list of air blocks below the rift -> set flow to second to last air block -> create a raw ender source block at last airblock
 					BlockPos blockRawEnderPos = (BlockHelper.findFirstSolidBlock(world, pos, EnumFacing.DOWN)).offset(EnumFacing.UP);
 					IBlockState rawEnderBlock = Ender.rawEnder.getDefaultState().withProperty(BlockFluidBase.LEVEL, 7);
-					world.setBlockState(belowBlockPos, rawEnderBlock, 1); //block update below the rift
+					world.setBlockState(belowBlockPos, rawEnderBlock, 2); //block update below the rift
 					//may not be necessary
-					((BlockRawEnder)rawEnderBlock.getBlock()).tryToFlowVerticallyInto(world, blockRawEnderPos, 1000);
-					world.setBlockState(blockRawEnderPos, Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
+					//((BlockRawEnder)rawEnderBlock.getBlock()).tryToFlowVerticallyInto(world, blockRawEnderPos, 1000);
+					world.setBlockState(blockRawEnderPos, rawEnderBlock, 2); //Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
 					
 				}
 				else
@@ -159,7 +159,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 
 	public static boolean isValidPortalLocation(World world, BlockPos blockPos)
 	{
-		for (BlockPos blockToCheck : BlockHelper.getBlocksAdjacentTo(blockPos))
+		for (BlockPos blockToCheck : BlockHelper.getHorizontalBlocksAdjacentTo(blockPos))
 		{
 			if (!(world.getBlockState(blockToCheck).getBlock() instanceof BlockEncrustedObsidian))
 				return false;

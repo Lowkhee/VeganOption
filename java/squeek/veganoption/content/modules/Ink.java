@@ -24,6 +24,7 @@ import squeek.veganoption.content.recipes.PistonCraftingRecipe;
 import squeek.veganoption.content.registry.BottleRegistry;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
+import squeek.veganoption.helpers.FluidHelper;
 
 public class Ink implements IContentModule
 {
@@ -62,12 +63,7 @@ public class Ink implements IContentModule
 		GameRegistry.register(new ItemBlock(blackInk).setRegistryName(blackInk.getRegistryName()));
 
 		//A: type of fluid and amount B: bottle when full C: bottle when empty
-		//blackVegetableOilInk.
-		BottleRegistry.registerFluidBottle(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk));
-		//FluidStack fluidStack = new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME);
-		//ItemStack bottle = new ItemStack(blackVegetableOilInk);
-		//UniversalBucket bottle = new UniversalBucket(Fluid.BUCKET_VOLUME, new ItemStack(blackVegetableOilInk.getContainerItem()), false);
-		//bucketPlantMilk = UniversalBucket.getFilledBucket(bottle, fluidPlantMilk);
+		//BottleRegistry.registerFluidBottle(new FluidStack(blackInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(blackVegetableOilInk));
 		
 		whiteVegetableOilInk = new Item()
 			.setUnlocalizedName(ModInfo.MODID + ".inkVegetableOilWhite")
@@ -85,9 +81,6 @@ public class Ink implements IContentModule
 		whiteInkFluid.setUnlocalizedName(whiteInk.getUnlocalizedName());
 		GameRegistry.register(whiteInk);
 		GameRegistry.register(new ItemBlock(whiteInk).setRegistryName(whiteInk.getRegistryName()));
-
-		//FluidContainerRegistry.registerFluidContainer(new FluidStack(whiteInkFluid, Fluid.BUCKET_VOLUME), new ItemStack(whiteVegetableOilInk), new ItemStack(whiteVegetableOilInk.getContainerItem()));
-		
 	}
 
 	@Override

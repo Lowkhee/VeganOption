@@ -2,26 +2,26 @@ Vegan Option
 1. DONE: Doll Eye can now be used to make Mundane potion and poison, such as spider eye
 2. DONE:changed basin to accept 5 bucket (blocks/tiles/TileEntityBasin -- line 33: *5) - change use bucket/bottle to fill and remove (see 5)
 3. doll eye grass unchecked
-4. !!!ClassTransforer never finds "net.minecraft.block.blockpistonbase"
-5. !!!make bucket/bottle usable on basin - filling seems to work by repeatedly dumping/creative (see #2)
+4. !!!ClassTransforer never finds "net.minecraft.block.blockpistonbase" - SEE#10
+5. DONE:make bucket/bottle usable on basin - filling seems to work by repeatedly dumping/creative (see #2)
 6. Raw Ender bucket has no JEI recipe -> added RelationshipRegistry.addRelationship(ItemStack(encrustedObsidian), bucketRawEnder.copy()); in Ender.java
 7. ~~Milk bucket - use cactus, but make it poison player
 8. DONE: (see #20)jei for tuft - shows unknown texture as input
 9. DONE: jute plant does not show up in creative tab - added line77: .setCreativeTab(VeganOption.creativeTab)
-10. !!!piston crafting in-world needs rework (handler,recipe, registry) and is not required to make milk or lye
+10. !!!piston crafting in-world needs rework (handler,recipe, registry) and is not required to make milk or lye -SEE#4
 11. DONE: bucket recipes are doubling leftover ingrediants (Milk/Lye) - cause: bucket is removed before (CraftingModifier) recipe search(net.minecraft.inventory.CraftingManager)->unable to find recipe - fix: CraftingModifier (line 83->86) replace water bucket without a container
 12. DONE: bucket items (milk/raw/lye) are not in the creative tab
 13. ~~~ add retted jute bundle to creative tab and jei - juteBundled.rettedItem.setCreativeTab(VeganOption.creativeTab); in jute.java line: 73
 14. ~~compost as farmland alternative?
 15. ~~what are passive compost benefits on adjacent farmland?
 16. !!!ItemStack - check all references for @nonnull
-17. ~~add more borwn for composter:stick, wood?
+17. ~~add more borwn for composter:stick, wood? if included already, unablee to add stick
 18. !!! check vegtableoil.java again - ink recipes using 2x vegoil bottle per - cause by Modifiers.crafting.addInputsToRemoveForOutput (line:115 & 120) - these are only necessary when waterBottle (vegoil) = 1
 19. DONE: BlockHelper can no longer use Reflection.invoke as it results in crash at blockStateToItemStack method. Replaceed with getSilkTouchDrop method from Block
 20. DONE(see #8): In order to get the correct meta in Kapok.java for Jungle leaves, properties: .withProperty(BlockOldLeaf.CHECK_DECAY, Boolean.valueOf(false)).withProperty(BlockOldLeaf.DECAYABLE, Boolean.valueOf(true)) need to be set, mainly CHECK_DECAY=false
 21. ~~Create advanced multi block to include mashing(piston), pressurizing(pressure plate), mixing(dough)
 22. ~~add tofu as option
-23. !!!Basin: change basin to have fluid stability check, certain fluids should not flow out - bucket/bottle not usable on basin, fill or empty --- DONE: see#27 1 block below rift - directly under(0 blocks below) does nothing -does not create full rawender block
+23. DONE:Basin: change basin to have fluid stability check, certain fluids should not flow out - bucket/bottle not usable on basin, fill or empty --- DONE: see#27 1 block below rift - directly under(0 blocks below) does nothing -does not create full rawender block
 24. ~~~Make frozenbubble directly usable on basin?
 25. Done: raw ender should be a full block - is full when contained
 26. DONE: glassbottle pickup veg oil, inks, soap solution, lye, rawender, milk = water bottle - PlayerControllerMP.class call net.minecraftforge.common.ForgeHooks.onItemRightClickAction(player, stack); results in NULL instead of PASS/DENY - the problem is a player interact with block(fluid) checks the variant item(fluid), and results in a water bottle - resolved by creating a new event FluidContainerHelper.playerRightClickItem
@@ -31,16 +31,21 @@ Vegan Option
 30. !BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
 31. !RenderBasin#renderTileEntity is called continously, is it necessary?
 32. DONE:see#29-placing basin next to power source doesnt update is_powered(open), only when adding powersource or doing blockupdate around it- onBlockAdded was not changing the actual blockstate
-33. !BlockBasin has a constant update to isSideSolid (to check powered), possibly change to check during blockupdate 
-34. !!!Basin cause rawender to not dissolve? recheck once basin conversion complete
-
-
+33. DONE:BlockBasin has a constant update to isSideSolid (to check powered), possibly change to check during blockupdate 
+34. DONE:Basin cause rawender to not dissolve until block update? recheck once basin conversion complete
+35. DONE: create basin fluidRegisterStability with stability enum (default value Tolerant), adds property stability to fluids, 
+	basin consumes fluid based on the variable and dissolves remaining, - may need to replace the block with blockfinite when stability is low
+	righthandclick - can only withdraw if fluid can create full container
+36. ~Basin - inserting items (frozen bubble/..) returns the resulting of applying it to the fluid, or is rejected - will provide automation ability - check RelationShipRegistry->Recipe against item and fluid for ouput
+37. DONE: recipe for encrustedObsidian has been changed to produce 1 block, should be more expensive to make
+38. DONE:Basin has fluid && isopen && not facing up && facing direction block is air, fluid should seep out at a stability rate
+39. DONE:Basin direction changeable
+40. DONE: BlockRawEnder - particle/sound while dissolve
+41. DONE: Basin now uses metadata to store properties for reload
+42. ~~BlockRawEner to flow vertically up instead of down?
+43. DONE: Rendering for TileEntityBasin#update for BlockLiquid and BlockFluidFinite Models for leaking
 
 fixed
-26
-27
-25
-32
 
 Updates:
 1. Basin block "top"(intake) can now be placed any direction (UDNSEW).

@@ -32,7 +32,7 @@ public class BlockEncrustedObsidian extends BlockObsidian
 
 	public static void tryPlacePortalAdjacentTo(World world, BlockPos pos)
 	{
-		for (BlockPos blockPosToCheck : BlockHelper.getBlocksAdjacentTo(pos))
+		for (BlockPos blockPosToCheck : BlockHelper.getHorizontalBlocksAdjacentTo(pos))
 		{
 			Block blockToCheck = world.getBlockState(blockPosToCheck).getBlock();
 			if (blockToCheck != Ender.enderRift && BlockEnderRift.isValidPortalLocation(world, blockPosToCheck) && blockToCheck.isReplaceable(world, blockPosToCheck))

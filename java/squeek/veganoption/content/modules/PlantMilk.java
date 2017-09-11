@@ -24,6 +24,7 @@ import squeek.veganoption.content.recipes.ShapelessMatchingOreRecipe;
 import squeek.veganoption.content.registry.DescriptionRegistry;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
+import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.integration.IntegrationBase;
 import squeek.veganoption.integration.IntegrationHandler;
 
@@ -55,6 +56,7 @@ public class PlantMilk implements IContentModule
 		bucketPlantMilk = UniversalBucket.getFilledBucket(bucket, fluidPlantMilk);
 		bucketPlantMilk.copy().getItem().setCreativeTab(VeganOption.creativeTab);
 		//bucket.fill(bucketPlantMilk, new FluidStack(fluidPlantMilk, Fluid.BUCKET_VOLUME), true);
+		
 	}
 
 	@Override

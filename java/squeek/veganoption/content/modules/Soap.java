@@ -26,6 +26,7 @@ import squeek.veganoption.content.recipes.InputItemStack;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
+import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.items.ItemSoap;
 
 public class Soap implements IContentModule

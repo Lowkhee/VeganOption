@@ -23,6 +23,7 @@ import squeek.veganoption.blocks.tiles.TileEntityEnderRift;
 import squeek.veganoption.content.ContentHelper;
 import squeek.veganoption.content.IContentModule;
 import squeek.veganoption.content.registry.RelationshipRegistry;
+import squeek.veganoption.helpers.FluidHelper;
 
 public class Ender implements IContentModule
 {
@@ -67,9 +68,9 @@ public class Ender implements IContentModule
 		fluidRawEnder.setUnlocalizedName(rawEnder.getUnlocalizedName());
 		GameRegistry.register(rawEnder);
 		GameRegistry.register(new ItemBlock(rawEnder).setRegistryName(rawEnder.getRegistryName()));
-
+	
 		FluidRegistry.addBucketForFluid(fluidRawEnder);
-
+		
 		UniversalBucket bucket = ForgeModContainer.getInstance().universalBucket;
 		//bucketRawEnder = new ItemStack(bucket);
 		bucketRawEnder = UniversalBucket.getFilledBucket(bucket, fluidRawEnder);

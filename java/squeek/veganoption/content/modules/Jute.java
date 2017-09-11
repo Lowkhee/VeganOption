@@ -39,7 +39,7 @@ import squeek.veganoption.items.ItemSeedsGeneric;
 public class Jute implements IContentModule
 {
 	public static BlockRettable juteBundled;
-	public static BlockRettable juteBundledRetted;
+	//public static BlockRettable juteBundledRetted;
 	public static Block jutePlant;
 	public static Item juteStalk;
 	public static Item juteFibre;

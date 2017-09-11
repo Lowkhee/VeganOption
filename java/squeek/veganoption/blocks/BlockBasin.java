@@ -15,9 +15,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -26,17 +31,37 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import squeek.veganoption.helpers.BlockHelper;
 import squeek.veganoption.helpers.LangHelper;
+import squeek.veganoption.ModInfo;
 import squeek.veganoption.blocks.tiles.TileEntityBasin;
 
 import javax.annotation.Nonnull;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 
@@ -45,9 +70,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+//@Mod.EventBusSubscriber
 @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")
 public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccessor
 {
+	private static final Logger Log = LogManager.getLogger(BlockBasin.class.getCanonicalName());
 	public static final PropertyBool IS_OPEN = PropertyBool.create("is_open");
 	public static final double SIDE_WIDTH = 0.125D;
 	public static final PropertyDirection FACING = PropertyDirection.create("facing",Lists.newArrayList(EnumFacing.values()));
@@ -56,40 +83,55 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	{
 		super(material);
 		setSoundType(SoundType.METAL);
+		//MinecraftForge.EVENT_BUS.post(new BasinEvent());
 	}
 
 	@Nonnull
 	@Override
-	public BlockStateContainer createBlockState()
+	public BlockStateContainer createBlockState() //called first on mc loading
 	{
 		return new BlockStateContainer(this, IS_OPEN, FACING);
 	}
 	
-	//called recreating, breaking
+	/*
+	 * called first on loading world with basin - called first? on breaking - use for non metadata informatio(non-Javadoc)
+	 * @see net.minecraft.block.Block#getActualState(net.minecraft.block.state.IBlockState, net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos)
+	 */
 	@Nonnull
 	@Override
-	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) //called second on save load
 	{
-		TileEntity tile = BlockHelper.getTileEntitySafely(world, pos);
-		boolean open = false;
+		/*TileEntity tile = BlockHelper.getTileEntitySafely(world, pos);
+		boolean open = false; 
+		EnumFacing direction = EnumFacing.UP;
 		if (tile != null && tile instanceof TileEntityBasin)
 		{
 			open = ((TileEntityBasin) tile).isOpen();
+			direction = ((TileEntityBasin) tile).getValveDirection();
 		}
-		return state.withProperty(IS_OPEN, open).withProperty(FACING, (EnumFacing)state.getProperties().get(FACING));
+		return state.withProperty(IS_OPEN, open).withProperty(FACING, direction);
+		
+		//uneeded? saved by NBT
+		TileEntity tile = world.getTileEntity(pos);
+		if (tile instanceof TileEntityBasin)
+		{
+			((TileEntityBasin) tile).setPowered(state.getValue(IS_OPEN));
+			((TileEntityBasin) tile).setValveDirection(state.getValue(FACING));
+		}*/
+		return super.getActualState(state, world, pos);
 	}
 
 	@Nonnull
 	@Override
-	public IBlockState getStateFromMeta(int meta)
+	public IBlockState getStateFromMeta(int meta) //called second on mc loading and first on save load
 	{
-		return getDefaultState();
+		return this.getDefaultState().withProperty(IS_OPEN, (meta > 5 ? true : false)).withProperty(FACING, EnumFacing.getFront(meta > 5 ? meta - 6 : meta));
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return 0;
+		return state.getValue(IS_OPEN) ? state.getValue(FACING).getIndex() + 6 : state.getValue(FACING).getIndex();
 	}
 
 	@Override
@@ -105,74 +147,192 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	}
 
 	/*
-	 * Misc properties - 
+	 * Returns false when valve side and is powered, which allows for powering from valve (nice quirk?)
 	 */
-	@Override
-	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
+	//@Override		isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, EnumFacing side)
 	{
-		if (side != state.getProperties().get(FACING))
-			return true;
+		if (side == state.getValue(FACING) && (boolean)state.getValue(IS_OPEN))
+			return false;
 
-		TileEntity tile = world.getTileEntity(pos);
+		/*TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityBasin)
 		{
 			return ((TileEntityBasin) tile).isClosed();
-		}
+		}*/
 
 		return true;
 	}
 
 	/*
-	 * Events
+	 * Events - this will not account for a BlockFluidFinite if it is not the source block since all flow is a blockitem
 	 */
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	public void neighborChanged(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockChanged, BlockPos posChanged)
 	{
-		super.neighborChanged(state, world, pos, block, fromPos);
+		super.neighborChanged(state, world, pos, blockChanged, posChanged);
 
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityBasin)
 		{
-			((TileEntityBasin) tile).setPowered(world.isBlockPowered(pos));
-			((TileEntityBasin) tile).scheduleFluidConsume();
+			boolean isPowered = world.isBlockPowered(pos);
+			if(isPowered != state.getValue(IS_OPEN))
+			{
+				world.setBlockState(pos, state.withProperty(IS_OPEN, isPowered), 2);//.withProperty(FACING, state.getValue(FACING)), 2);
+				((TileEntityBasin) tile).setPowered(isPowered);
+			}
+			//EnumFacing facing = world.getBlockState(pos).getValue(FACING);
+			
+			boolean isSolidSide = this.isSideSolid(state, BlockHelper.sideBlockLocated(pos, posChanged));
+			
+			//save for hopper or any other connection
+			
+			if(!isSolidSide)
+				((TileEntityBasin) tile).consumeFluidAtValve(world, posChanged);
+			//if(!isSolidSide && blockChanged instanceof BlockFluidBase)
+			//	((TileEntityBasin) tile).scheduleFluidConsume();
 		}
+		
 	}
 	
-	//called first on block placement
+	/*
+	 * if facing up, and empty basin or basin has water, fill with rain water
+	 * @see net.minecraft.block.Block#fillWithRain(net.minecraft.world.World, net.minecraft.util.math.BlockPos)
+	 */
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+	public void fillWithRain(World worldIn, BlockPos pos)
     {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    }
+	
+	/*
+	 * check whether basin is full
+	 */
+	public boolean isBasinFull(@Nonnull World world, @Nonnull BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof TileEntityBasin)
+			return ((TileEntityBasin)tile).isBasinFull();
+		return false;
+	}
+	
+	/*
+	 * get capacity of basin
+	 */
+	public int getBasinCapacity(@Nonnull World world, @Nonnull BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof TileEntityBasin)
+			return ((TileEntityBasin)tile).getBasinTankCapacity();
+		return -1;
+	}
+	/*
+	 * get the amount of fluid in the basin
+	 */
+		public int getBasinFluidAmount(@Nonnull World world, @Nonnull BlockPos pos)
+		{
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile instanceof TileEntityBasin)
+				return ((TileEntityBasin)tile).getBasinTankAmount();
+			return -1;
+		}
+	/*
+	 * get fluid in basin, null otherwise
+	 */
+	public FluidStack getBasinFluid(@Nonnull World world, @Nonnull BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof TileEntityBasin)
+			return ((TileEntityBasin)tile).getBasinTankFluid();
+		return null;
+	}
+	
+	
+	/*
+	 * called first on block placement(non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.block.state.IBlockState, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
+	@Override
+	public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
 		EnumFacing facing = placer.getLookVec().yCoord <= -.8 ? EnumFacing.UP : placer.getLookVec().yCoord >= .8 ? EnumFacing.DOWN : placer.getHorizontalFacing().getOpposite();
-		boolean powered = worldIn.isBlockPowered(pos);
-		worldIn.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
-		TileEntity tile = worldIn.getTileEntity(pos);
+		boolean powered = world.isBlockPowered(pos);
+		world.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
+		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityBasin)
 		{
 			((TileEntityBasin) tile).setPowered(powered);
-			((TileEntityBasin) tile).scheduleFluidConsume();
+			//((TileEntityBasin) tile).scheduleFluidConsume();
+			((TileEntityBasin) tile).setValveDirection(facing);
 		}
     }
 
-	//called after onBlockPlacedBy
+	/*
+	 * called after onBlockPlacedBy(non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockAdded(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.block.state.IBlockState)
+	 */
 	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
 		super.onBlockAdded(world, pos, state);
-
 		
 	}
 
-	//called when player interacts (right/left click?)
+	/*
+	 * called when player interacts (right/left click?)
+	 */
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ))
-			return true;
-
-		TileEntity tile = world.getTileEntity(pos);
-		return tile instanceof TileEntityBasin && ((TileEntityBasin) tile).onBlockActivated(player, hand, side, hitX, hitY, hitZ);
+		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+		
+		
+		/*TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof TileEntityBasin)
+		{
+			IFluidHandler fluidHandlerBasin = (IFluidHandler)((TileEntityBasin)tile).getBasinTank();
+			IItemHandler itemHandlerInventory = new PlayerMainInvWrapper(player.inventory);
+			//if(!(player.inventoryContainer. instanceof IItemHandler))
+			//	return false;
+			//IItemHandler itemHandlerInventory = (IItemHandler)player.inventoryContainer;
+			
+			Item itemHeld = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem();
+			IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(new ItemStack(itemHeld, 1));
+			if(fluidHandlerItem == null)
+				return false;
+			//if(itemHeld.getContainerItem() == Items.BUCKET || itemHeld.getContainerItem() instanceof net.minecraftforge.fluids.UniversalBucket || itemHeld.getContainerItem() == Items.GLASS_BOTTLE)
+			//{	
+				FluidStack fluidStackItem = fluidHandlerItem.drain(Integer.MAX_VALUE, false);
+				
+				if(fluidStackItem == null)
+					FluidUtil.tryFillContainerAndStow(new ItemStack(itemHeld, 1), fluidHandlerBasin, itemHandlerInventory, Fluid.BUCKET_VOLUME, player);
+				else
+					FluidUtil.tryEmptyContainerAndStow(new ItemStack(itemHeld, 1), fluidHandlerBasin, itemHandlerInventory, Fluid.BUCKET_VOLUME, player);
+			//}
+	
+		}
+		return tile instanceof TileEntityBasin && ((TileEntityBasin) tile).onBlockActivated(player, hand, side, hitX, hitY, hitZ);*/
 	}
+	
+	/*private static class BasinEvent extends Event
+	{
+		
+	@SubscribeEvent
+	public static void onRightClick(PlayerInteractEvent.RightClickBlock event)
+	{
+		Log.log(ModInfo.debugLevel, "Right Clicked Block");
+		//Item itemRightHand = event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem();
+		//if(itemRightHand == (new ItemStack(Blocks.TORCH, 1).getItem()))
+			if(event.getFace() != null && event.getFace() != event.getWorld().getBlockState(event.getPos()).getValue(FACING))
+			{
+				event.setCanceled(true);
+				event.setUseItem(Result.DENY);
+				event.setUseBlock(Result.DENY);
+				event.setCanceled(true);
+				event.setCancellationResult(EnumActionResult.FAIL);
+			}
+	}
+	}*/
 
 	/*
 	 * Bounding box/collisions
@@ -324,7 +484,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	}
 
 	/*
-	 * IHollowBlock
+	 * IHollowBlock - returns false when block is powered
 	 */
 	@Override
 	public boolean isBlockFullCube(World world, BlockPos pos)
@@ -371,5 +531,6 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		probeInfo.text(LangHelper.translate("info.basin." + (basin.isPowered() ? "open" : "closed")));
 
 	}
+	
 	
 }
