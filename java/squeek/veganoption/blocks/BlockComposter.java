@@ -124,7 +124,7 @@ public class BlockComposter extends Block implements IProbeInfoAccessor
 		{
 			return ((TileEntityComposter) tile).getComparatorSignalStrength();
 		}
-		return super.getComparatorInputOverride(state, world, pos);
+		return 0;
 	}
 
 	@Override

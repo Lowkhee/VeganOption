@@ -2,15 +2,12 @@ package squeek.veganoption.content.modules;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoublePlant;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.MinecraftForge;
@@ -73,11 +70,6 @@ public class Jute implements IContentModule
 		GameRegistry.register(juteBundled);
 		GameRegistry.register(new ItemBlock(juteBundled).setRegistryName(juteBundled.getRegistryName()));
 		
-		//attempting to create a retted stage for the creative tab
-		//BlockStateContainer juteBundleRetted = juteBundled.createBlockState();
-		//juteBundleRetted.
-		//(new ItemStack(juteBundled.getBlockState().getValidStates().get(3).getBlock())).copy().getItem().setCreativeTab(VeganOption.creativeTab);
-
 		jutePlant = new BlockJutePlant()
 			.setUnlocalizedName(ModInfo.MODID + ".jutePlant")
 			.setCreativeTab(VeganOption.creativeTab)
@@ -173,7 +165,7 @@ public class Jute implements IContentModule
 			return;
 
 		World world = event.getWorld();
-		BlockPos posBelow = event.getPos().down();
+		//BlockPos posBelow = event.getPos().down();
 		IBlockState stateBelow = world.getBlockState(event.getPos().down());
 		Block blockBelow = stateBelow.getBlock();
 		if (blockBelow != block)

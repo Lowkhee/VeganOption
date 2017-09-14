@@ -23,7 +23,6 @@ import squeek.veganoption.blocks.tiles.TileEntityEnderRift;
 import squeek.veganoption.content.ContentHelper;
 import squeek.veganoption.content.IContentModule;
 import squeek.veganoption.content.registry.RelationshipRegistry;
-import squeek.veganoption.helpers.FluidHelper;
 
 public class Ender implements IContentModule
 {

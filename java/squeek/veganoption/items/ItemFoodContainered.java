@@ -27,12 +27,12 @@ public class ItemFoodContainered extends ItemFood
 	{
 		ItemStack itemStackRemaining = super.onItemUseFinish(itemStack, world, entity);
 
-		if (getContainerItem() != null)
+		if (itemStack != null && getContainerItem() != null)
 		{
 			ItemStack container = getContainerItem(itemStack);
-			if (itemStackRemaining.isEmpty())
+			if (itemStackRemaining != null && itemStackRemaining.isEmpty())
 				return container;
-			else if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).inventory.addItemStackToInventory(container))
+			else if (container != null && (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).inventory.addItemStackToInventory(container)))
 				entity.entityDropItem(container, 0);
 		}
 

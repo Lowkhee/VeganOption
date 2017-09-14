@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public class InputItemStack
 {
 	public ItemStack wrappedItemStack = ItemStack.EMPTY;
@@ -53,7 +55,7 @@ public class InputItemStack
 			throw new RuntimeException("Unsupported InputItemStack input: " + object);
 	}
 
-	protected InputItemStack(List<ItemStack> itemStacks)
+	protected InputItemStack(@Nonnull List<ItemStack> itemStacks)
 	{
 		this.oreDictItemStacks = itemStacks;
 	}
@@ -63,7 +65,7 @@ public class InputItemStack
 		return matches(input, false);
 	}
 
-	public boolean matches(ItemStack input, boolean strict)
+	public boolean matches(@Nonnull ItemStack input, boolean strict)
 	{
 		if (!wrappedItemStack.isEmpty())
 			return OreDictionary.itemMatches(wrappedItemStack, input, strict);

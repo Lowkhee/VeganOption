@@ -9,33 +9,35 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 public class MiscHelper
 {
 	public static final int MAX_REDSTONE_SIGNAL_STRENGTH = 15;
 	public static final int TICKS_PER_SEC = 20;
 	public static final int TICKS_PER_DAY = 24000; // 20 minutes realtime
 
-	public static boolean wildcardItemStacksMatch(ItemStack a, ItemStack b)
+	public static boolean wildcardItemStacksMatch(@Nonnull ItemStack a, @Nonnull ItemStack b)
 	{
 		return OreDictionary.itemMatches(a, b, false) || OreDictionary.itemMatches(b, a, false);
 	}
 
-	public static boolean isItemStackInList(Collection<ItemStack> haystack, ItemStack needle)
+	public static boolean isItemStackInList(Collection<ItemStack> haystack, @Nonnull ItemStack needle)
 	{
 		return isItemStackInList(haystack, needle, false);
 	}
 
-	public static boolean isItemStackInList(Collection<ItemStack> haystack, ItemStack needle, boolean strict)
+	public static boolean isItemStackInList(Collection<ItemStack> haystack, @Nonnull ItemStack needle, boolean strict)
 	{
 		return getMatchingItemStackFromList(haystack, needle, strict) != null;
 	}
 
-	public static ItemStack getMatchingItemStackFromList(Collection<ItemStack> haystack, ItemStack needle)
+	public static ItemStack getMatchingItemStackFromList(Collection<ItemStack> haystack, @Nonnull ItemStack needle)
 	{
 		return getMatchingItemStackFromList(haystack, needle, false);
 	}
 
-	public static ItemStack getMatchingItemStackFromList(Collection<ItemStack> haystack, ItemStack needle, boolean strict)
+	public static ItemStack getMatchingItemStackFromList(Collection<ItemStack> haystack, @Nonnull ItemStack needle, boolean strict)
 	{
 		if (haystack != null)
 		{

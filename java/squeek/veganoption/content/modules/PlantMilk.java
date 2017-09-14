@@ -2,7 +2,6 @@ package squeek.veganoption.content.modules;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,6 @@ import squeek.veganoption.content.recipes.ShapelessMatchingOreRecipe;
 import squeek.veganoption.content.registry.DescriptionRegistry;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
-import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.integration.IntegrationBase;
 import squeek.veganoption.integration.IntegrationHandler;
 

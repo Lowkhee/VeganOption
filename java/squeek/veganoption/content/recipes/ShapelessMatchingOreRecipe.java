@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
+
 /**
  * Like ShapelessOreRecipe, but all OreDict inputs need to match with eachother
  *
@@ -33,7 +35,7 @@ public class ShapelessMatchingOreRecipe extends ShapelessOreRecipe
 	}
 
 	@SuppressWarnings("unchecked")
-	public ShapelessMatchingOreRecipe(ItemStack result, Object... recipe)
+	public ShapelessMatchingOreRecipe(@Nonnull ItemStack result, Object... recipe)
 	{
 		super(result, recipe);
 

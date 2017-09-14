@@ -1,22 +1,22 @@
 Vegan Option
 1. DONE: Doll Eye can now be used to make Mundane potion and poison, such as spider eye
 2. DONE:changed basin to accept 5 bucket (blocks/tiles/TileEntityBasin -- line 33: *5) - change use bucket/bottle to fill and remove (see 5)
-3. doll eye grass unchecked
-4. !!!ClassTransforer never finds "net.minecraft.block.blockpistonbase" - SEE#10
+3. !doll eye grass unchecked
+4. DONE:ClassTransforer never finds "net.minecraft.block.blockpistonbase" - SEE#10
 5. DONE:make bucket/bottle usable on basin - filling seems to work by repeatedly dumping/creative (see #2)
 6. Raw Ender bucket has no JEI recipe -> added RelationshipRegistry.addRelationship(ItemStack(encrustedObsidian), bucketRawEnder.copy()); in Ender.java
 7. ~~Milk bucket - use cactus, but make it poison player
 8. DONE: (see #20)jei for tuft - shows unknown texture as input
 9. DONE: jute plant does not show up in creative tab - added line77: .setCreativeTab(VeganOption.creativeTab)
-10. !!!piston crafting in-world needs rework (handler,recipe, registry) and is not required to make milk or lye -SEE#4
+10. DONE:piston crafting in-world needs rework (handler,recipe, registry) and is not required to make milk or lye -SEE#4
 11. DONE: bucket recipes are doubling leftover ingrediants (Milk/Lye) - cause: bucket is removed before (CraftingModifier) recipe search(net.minecraft.inventory.CraftingManager)->unable to find recipe - fix: CraftingModifier (line 83->86) replace water bucket without a container
 12. DONE: bucket items (milk/raw/lye) are not in the creative tab
 13. ~~~ add retted jute bundle to creative tab and jei - juteBundled.rettedItem.setCreativeTab(VeganOption.creativeTab); in jute.java line: 73
 14. ~~compost as farmland alternative?
 15. ~~what are passive compost benefits on adjacent farmland?
 16. !!!ItemStack - check all references for @nonnull
-17. ~~add more borwn for composter:stick, wood? if included already, unablee to add stick
-18. !!! check vegtableoil.java again - ink recipes using 2x vegoil bottle per - cause by Modifiers.crafting.addInputsToRemoveForOutput (line:115 & 120) - these are only necessary when waterBottle (vegoil) = 1
+17. DONE:add more borwn for composter:stick, wood? if included already, unablee to add stick
+18. DONE: check vegtableoil.java again - ink recipes using 2x vegoil bottle per - cause by Modifiers.crafting.addInputsToRemoveForOutput (line:115 & 120) - these are only necessary when waterBottle (vegoil) = 1
 19. DONE: BlockHelper can no longer use Reflection.invoke as it results in crash at blockStateToItemStack method. Replaceed with getSilkTouchDrop method from Block
 20. DONE(see #8): In order to get the correct meta in Kapok.java for Jungle leaves, properties: .withProperty(BlockOldLeaf.CHECK_DECAY, Boolean.valueOf(false)).withProperty(BlockOldLeaf.DECAYABLE, Boolean.valueOf(true)) need to be set, mainly CHECK_DECAY=false
 21. ~~Create advanced multi block to include mashing(piston), pressurizing(pressure plate), mixing(dough)
@@ -27,7 +27,7 @@ Vegan Option
 26. DONE: glassbottle pickup veg oil, inks, soap solution, lye, rawender, milk = water bottle - PlayerControllerMP.class call net.minecraftforge.common.ForgeHooks.onItemRightClickAction(player, stack); results in NULL instead of PASS/DENY - the problem is a player interact with block(fluid) checks the variant item(fluid), and results in a water bottle - resolved by creating a new event FluidContainerHelper.playerRightClickItem
 27. DONE: see#23 - changed raw ender to spawn at block below rift-> then to flow to the lowest solid block, both cause block update->disovle fluid if not full bucket - see BlockRawEnder and BlockEnderRift
 28. ~~~make basin usable with pipes from other mods
-29. ~~~see#23-basin - powering block changes direction of top/intake - 
+29. DONE:see#23-basin - powering block changes direction of top/intake - 
 30. !BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
 31. !RenderBasin#renderTileEntity is called continously, is it necessary?
 32. DONE:see#29-placing basin next to power source doesnt update is_powered(open), only when adding powersource or doing blockupdate around it- onBlockAdded was not changing the actual blockstate
@@ -44,11 +44,16 @@ Vegan Option
 41. DONE: Basin now uses metadata to store properties for reload
 42. ~~BlockRawEner to flow vertically up instead of down?
 43. DONE: Rendering for TileEntityBasin#update for BlockLiquid and BlockFluidFinite Models for leaking
+44. DONE:apple sauce should require a piston for mashing?
+45. !!!JEI - using depricated methods - update - 
+46. !!Composter - add green - wheat
+47. !!!Creativetab/jei - Bucket Rawender has no recipe - Bedstraw has different notation - jutefibre displays unretted jutebundle - blank mob head > add recipe for variations? 
+48. DONE: Recipes - soap solution > consumes bucket - papier mache > consumes bucket - blaze rod > increase flint and steel usage - wheat > wheat dough > raw seitan > consumes bucket > false morel not listed as fermented spider eye replacement
+49. ~!~Additions: Prismarine Shard/Prismarine Crystals alternative? sea Guardian drop/ lantern silk touch - Shulker Shell > shulkers - Rabbit foot alt
+50. !test caomparator on Basin
 
-fixed
 
-Updates:
-1. Basin block "top"(intake) can now be placed any direction (UDNSEW).
+
 
 
 

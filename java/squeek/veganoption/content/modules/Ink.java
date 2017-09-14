@@ -21,10 +21,8 @@ import squeek.veganoption.content.ContentHelper;
 import squeek.veganoption.content.IContentModule;
 import squeek.veganoption.content.Modifiers;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
-import squeek.veganoption.content.registry.BottleRegistry;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
-import squeek.veganoption.helpers.FluidHelper;
 
 public class Ink implements IContentModule
 {

@@ -34,7 +34,7 @@ public class Egg implements IContentModule
 	public static Item appleSauce;
 	public static Item plasticEgg;
 
-	public static final ItemStack potatoCrusher = new ItemStack(Blocks.PISTON);
+	public static final ItemStack masher = new ItemStack(Blocks.PISTON);
 
 	@Override
 	public void create()
@@ -112,10 +112,11 @@ public class Egg implements IContentModule
 		Modifiers.recipes.convertOreDictForFoodOutput(ContentHelper.eggForgeOreDict, ContentHelper.eggBakingOreDict);
 		Modifiers.recipes.convertOreDictForNonFoodOutput(ContentHelper.eggForgeOreDict, ContentHelper.eggObjectOreDict);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(appleSauce), new ItemStack(Items.APPLE), new ItemStack(Items.BOWL));
+		GameRegistry.addShapelessRecipe(new ItemStack(appleSauce), masher, new ItemStack(Items.APPLE), new ItemStack(Items.BOWL));
+		Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(appleSauce), masher);
 
-		GameRegistry.addShapelessRecipe(new ItemStack(potatoStarch), potatoCrusher, new ItemStack(Items.POTATO));
-		Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(potatoStarch), potatoCrusher);
+		GameRegistry.addShapelessRecipe(new ItemStack(potatoStarch), masher, new ItemStack(Items.POTATO));
+		Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(potatoStarch), masher);
 
 		PistonCraftingRegistry.register(new PistonCraftingRecipe(new ItemStack(potatoStarch), Items.POTATO));
 

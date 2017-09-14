@@ -78,10 +78,13 @@ public class Seitan implements IContentModule
 		PistonCraftingRegistry.register(new PistonCraftingRecipe(wheatFlourStack.copy(), Items.WHEAT));
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(wheatDoughStack.copy(), new ItemStack(Items.WATER_BUCKET), ContentHelper.wheatFlourOreDict));
+		Modifiers.crafting.addInputsToKeepForOutput(wheatDoughStack.copy(),  new ItemStack(Items.BUCKET));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(seitanUnwashedStack.copy(), new ItemStack(Items.WATER_BUCKET), ContentHelper.wheatDoughOreDict));
+		Modifiers.crafting.addInputsToKeepForOutput(seitanUnwashedStack.copy(),  new ItemStack(Items.BUCKET));
 		for (int outputMeta = ItemWashableWheat.META_UNWASHED_START + 1; outputMeta < ItemWashableWheat.META_UNWASHED_END; outputMeta++)
 		{
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(washableWheat, 1, outputMeta), new ItemStack(Items.WATER_BUCKET), new ItemStack(washableWheat, 1, outputMeta - 1)));
+			Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(washableWheat, 1, outputMeta),  new ItemStack(Items.BUCKET));
 		}
 		GameRegistry.addRecipe(new ShapelessOreRecipe(seitanRawStack.copy(), new ItemStack(Items.WATER_BUCKET), new ItemStack(washableWheat, 1, ItemWashableWheat.META_RAW - 1)));
 	}

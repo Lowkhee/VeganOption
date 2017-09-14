@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,20 +13,15 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import squeek.veganoption.ModInfo;
 import squeek.veganoption.blocks.BlockBasin;
 import squeek.veganoption.content.modules.Basin;
-import squeek.veganoption.content.modules.Ender;
 import squeek.veganoption.helpers.BlockHelper;
 import squeek.veganoption.helpers.FluidContainerHelper;
 import squeek.veganoption.helpers.FluidHelper;
@@ -35,8 +29,8 @@ import squeek.veganoption.helpers.MiscHelper;
 import squeek.veganoption.helpers.WorldHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +42,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 public class TileEntityBasin extends TileEntity implements ITickable
 {
 	protected static final Logger Log = LogManager.getLogger(TileEntityBasin.class.getCanonicalName());
-	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*3); //10000=10 buckets
+	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*10); //10000=10 buckets
 	protected boolean isPowered = false;
 	protected EnumFacing valveDirection = EnumFacing.UP;
 	protected boolean fluidConsumeStopped = true;
@@ -58,13 +52,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public static int FLUID_CONSUME_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
 	public static int CONTAINER_FILL_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
 	
-	
-	//public boolean updateFluid(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
-	//{
-		
-	//}
-	
-	
+
 	/*
 	 * Updating
 	 */
@@ -85,23 +73,23 @@ public class TileEntityBasin extends TileEntity implements ITickable
 				{
 					int leakAmt = (int)(this.fluidTank.getCapacity() * ((float)fluidStability.ordinal() / Fluid.BUCKET_VOLUME));
 					Block block = this.fluidTank.getFluid().getFluid().getBlock();//state.getBlock();
-					FluidStack fluidDrained = this.fluidTank.drain(new FluidStack(this.getBasinTankFluid().getFluid(), leakAmt), true);
+					this.fluidTank.drain(new FluidStack(this.getBasinTankFluid().getFluid(), leakAmt), true);
 					BlockPos posFluid = pos.offset(this.valveDirection);
 					PropertyInteger LEVEL = PropertyInteger.create("level", 0, 15);
 					
 					if(!(block instanceof BlockFluidFinite))
 					{
-						world.setBlockState(posFluid, block.getDefaultState().withProperty(LEVEL, Integer.valueOf(5)));//4
+						world.setBlockState(posFluid, block.getDefaultState().withProperty(LEVEL, Integer.valueOf(5)), 6);//4
 						if(block instanceof BlockLiquid)
 							world.getBlockState(posFluid).getBlock().randomDisplayTick(world.getBlockState(posFluid), world, posFluid, new Random());
 					}
-					else
+					/*else //BlockFluidFinite drain issues
 					{
 						world.setBlockState(posFluid, block.getDefaultState().withProperty(LEVEL, Integer.valueOf(7)), 2);
 						///random display tick for finite? show particles at least
 						((BlockFluidFinite)world.getBlockState(posFluid).getBlock()).randomDisplayTick(world.getBlockState(posFluid), world, posFluid, new Random());
 						world.setBlockState(posFluid, Blocks.AIR.getDefaultState(), 2);
-					}	
+					}*/
 				}
 			}
 		}
@@ -147,10 +135,10 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return isOpen() && fluidTank.getFluidAmount() > 0;
 	}
 
-	public boolean shouldFillContainers()
+	/*public boolean shouldFillContainers()
 	{
 		return couldFillContainers() && ticksUntilNextContainerFill <= 0;
-	}
+	}*/
 
 	public boolean tryFillContainersInside()
 	{
@@ -180,7 +168,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return false;
 	}
 
-	public void scheduleFillContainers(int ticksUntilContainerFill)
+	/*public void scheduleFillContainers(int ticksUntilContainerFill)
 	{
 		if (ticksUntilNextContainerFill == 0)
 			ticksUntilNextContainerFill = ticksUntilContainerFill;
@@ -191,12 +179,12 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public void scheduleFillContainers()
 	{
 		scheduleFillContainers(CONTAINER_FILL_TICK_PERIOD);
-	}
+	}*/
 
 	/*
 	 * Fluid consuming behavior
 	 */
-	public boolean couldConsumeFluid()
+	/*public boolean couldConsumeFluid()
 	{
 		return isOpen() && fluidTank.getFluidAmount() != fluidTank.getCapacity();
 	}
@@ -225,7 +213,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 
 		fluidTank.fill(fluidToAdd, true);
 		return true;
-	}
+	}*/
 	
 	/*
 	 * is fluid tank full
@@ -351,7 +339,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return 0;
 	}
 
-	public void scheduleFluidConsume(int ticksUntilFluidConsume)
+	/*public void scheduleFluidConsume(int ticksUntilFluidConsume)
 	{
 		if (ticksUntilFluidConsume == 0)
 			tryConsumeFluidAbove();
@@ -371,7 +359,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public void endFluidConsume()
 	{
 		fluidConsumeStopped = true;
-	}
+	}*/
 
 	/*
 	 * Open/closed state
@@ -386,7 +374,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return !isOpen();
 	}
 
-	public void onOpen()
+	/*public void onOpen()
 	{
 		scheduleFluidConsume();
 	}
@@ -394,7 +382,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public void onClose()
 	{
 		endFluidConsume();
-	}
+	}*/
 
 	//Following methods incorporated into FluidCotainerHelper
 	/*
@@ -405,7 +393,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		ItemStack heldItem = player.getHeldItem(hand);
 		if (FluidContainerHelper.isItemFluidContainer(heldItem))
 		{
-			// TODO: This would be better moved directly into FluidContainerHelper
+			// DoneTODO: This would be better moved directly into FluidContainerHelper
 			IFluidHandler containerCap = FluidUtil.getFluidHandler(heldItem);
 			if (containerCap == null)
 				return false;
@@ -492,7 +480,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		if (world != null)
 			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
 
-		onOpen();
+		//onOpen();
 	}
 
 	public void onUnpowered()
@@ -500,7 +488,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		if (world != null)
 			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
 
-		onClose();
+		//onClose();
 	}
 	
 	/*
@@ -538,8 +526,8 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		else
 			fluidTank.setFluid(null);
 
-		setPowered(compound.getBoolean("Powered"));
 		this.setValveDirection(EnumFacing.values()[compound.getInteger("Facing")]);
+		setPowered(compound.getBoolean("Powered"));
 	}
 
 	public void writeSyncedNBT(NBTTagCompound compound)
@@ -550,9 +538,15 @@ public class TileEntityBasin extends TileEntity implements ITickable
 			fluidTank.getFluid().writeToNBT(fluidTag);
 			compound.setTag("Fluid", fluidTag);
 		}
-
-		compound.setBoolean("Powered", isPowered());
+		IBlockState state = world.getBlockState(pos);
+		if(state != null)
+		{
+			this.isPowered = state.getValue(BlockBasin.IS_OPEN);
+			this.valveDirection = state.getValue(BlockBasin.FACING);
+		}
+		//if state is null, default values will be written
 		compound.setInteger("Facing", this.getValveDirection().ordinal());
+		compound.setBoolean("Powered", isPowered());
 	}
 
 	@Override
@@ -583,8 +577,8 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	}
 
 	/*
-			 * Save data
-			 */
+	 * Save data
+	*/
 	@Override
 	public void readFromNBT(NBTTagCompound compound)
 	{
@@ -592,16 +586,20 @@ public class TileEntityBasin extends TileEntity implements ITickable
 
 		readSyncedNBT(compound);
 
-		if (compound.hasKey("NextConsume"))
+		/*if (compound.hasKey("NextConsume"))
 		{
 			scheduleFluidConsume(compound.getInteger("NextConsume"));
 		}
 		else
 		{
 			endFluidConsume();
-		}
+		}*/
 	}
 
+	/*
+	 * Called after BlockBasin#onBlockPlacedBy 
+	 * @see net.minecraft.tileentity.TileEntity#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
 	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound)
@@ -610,10 +608,10 @@ public class TileEntityBasin extends TileEntity implements ITickable
 
 		writeSyncedNBT(compound);
 
-		if (!fluidConsumeStopped)
+		/*if (!fluidConsumeStopped)
 		{
 			compound.setInteger("NextConsume", ticksUntilNextFluidConsume);
-		}
+		}*/
 
 		return compound;
 	}

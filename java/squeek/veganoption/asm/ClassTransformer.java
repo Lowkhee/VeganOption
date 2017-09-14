@@ -1,6 +1,7 @@
 package squeek.veganoption.asm;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import squeek.veganoption.ModInfo;
 
 import org.apache.logging.log4j.*;
 import org.objectweb.asm.ClassReader;
@@ -20,37 +21,20 @@ public class ClassTransformer implements IClassTransformer
 	private static final Logger Log = LogManager.getLogger(ClassTransformer.class.getCanonicalName());
 	// gets set in ASMPlugin.injectData
 	public static boolean isEnvObfuscated = false;
-	
-	//once world/World is loaded, further transFormedNames must be lowercase 
-	//debug - run in debugger then build .jar and run in mod folder (look in latest log file for the same reference number)
-	protected static void findNewObfValues(ClassNode classNode, boolean obf, String transName)
-	{
-		int counter = 0;
-		String obfString = obf ? "Obf" : "nonObf";
-		Log.log(squeek.veganoption.ModInfo.debugLevel, "--------------------------------Class Name: " + classNode.name + "--- Class Path: " + transName + "--------------------------------");
-		for(MethodNode methodNode : classNode.methods)
-		{
-			counter++;
-			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method name:" + methodNode.name);
-			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method desc:" + methodNode.desc);
-			Log.log(squeek.veganoption.ModInfo.debugLevel, obfString + " method location:" + counter);
-		}
-	}
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
 		
-		if (transformedName.equals("net.minecraft.block.blockdynamicliquid"))
+		if (transformedName.equals("net.minecraft.block.BlockDynamicLiquid"))
 		{
 			boolean isObfuscated = !name.equals(transformedName);
 
 			ClassNode classNode = readClassFromBytes(bytes);
 			
-			//debug
-			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
+			//ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
 
-			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "tryFlowInto", isObfuscated ? "(Laid;Lcm;Lars;I)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)V");
+			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "tryFlowInto", isObfuscated ? "(Lajs;Lco;Latl;I)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)V");
 			
 			/*
 			if (Hooks.onFlowIntoBlock(world, pos, state, flowDecay))
@@ -71,41 +55,45 @@ public class ClassTransformer implements IClassTransformer
 
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraft.tileentity.tileentitypiston"))
+		/*else if(transformedName.equals("net.minecraft.tileentity.TileEntity"))
+		{
+			debug to find changed values
+			ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
+		}*/
+		else if (transformedName.equals("net.minecraft.tileentity.TileEntityPiston"))
 		{
 			boolean isObfuscated = !name.equals(transformedName);
 
 			ClassNode classNode = readClassFromBytes(bytes);
 
-			//debug
-			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
+			//ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
 			
-			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "E_" : "update", "()V");
+			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "F_" : "update", "()V");
 
 			InsnList toInject = new InsnList();
 			toInject.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "aqk" : "net/minecraft/tileentity/TileEntity", isObfuscated ? "b" : "worldObj", isObfuscated ? "Laid;" : "Lnet/minecraft/world/World;"));
+			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "asc" : "net/minecraft/tileentity/TileEntity", isObfuscated ? "b" : "worldObj", isObfuscated ? "Lajs;" : "Lnet/minecraft/world/World;"));
 			toInject.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "aqk" : "net/minecraft/tileentity/TileEntity", isObfuscated ? "c" : "pos", isObfuscated ? "Lcm;" : "Lnet/minecraft/util/math/BlockPos;"));
+			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "asc" : "net/minecraft/tileentity/TileEntity", isObfuscated ? "c" : "pos", isObfuscated ? "Lco;" : "Lnet/minecraft/util/math/BlockPos;"));
 			toInject.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "arm" : "net/minecraft/tileentity/TileEntityPiston", isObfuscated ? "i" : "progress", "F"));
+			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "atf" : "net/minecraft/tileentity/TileEntityPiston", isObfuscated ? "j" : "progress", "F"));
 			toInject.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "arm" : "net/minecraft/tileentity/TileEntityPiston", isObfuscated ? "g" : "extending", "Z"));
+			toInject.add(new FieldInsnNode(Opcodes.GETFIELD, isObfuscated ? "atf" : "net/minecraft/tileentity/TileEntityPiston", isObfuscated ? "g" : "extending", "Z"));
 			toInject.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(Hooks.class), "onPistonTileUpdate", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;FZ)V", false));
 
 			method.instructions.insertBefore(findFirstInstruction(method), toInject);
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraft.block.blockpistonbase"))
+		else if (transformedName.equals("net.minecraft.block.BlockPistonBase"))
 		{
-			Log.log(squeek.veganoption.ModInfo.debugLevel, "Found: net.minecraft.block.blockpistonbase");
+			
 			boolean isObfuscated = !name.equals(transformedName);
 			ClassNode classNode = readClassFromBytes(bytes);
-			//debug
-			ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
 			
-			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "doMove", isObfuscated ? "(Laid;Lcm;Lct;Z)Z" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
-
+			//ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
+			
+			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "doMove", isObfuscated ? "(Lajs;Lco;Lcv;Z)Z" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
+			
 			/*
 			Hooks.onPistonTryExtend(world, pos)
 			*/
@@ -126,8 +114,7 @@ public class ClassTransformer implements IClassTransformer
 
 			ClassNode classNode = readClassFromBytes(bytes);
 			
-			//debug
-			//ClassTransformer.findNewObfValues(classNode, isObfuscated, transformedName);
+			//ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
 
 			// isFullCube before: "t" and "(Lcm;)Z" Now: "d" and "(Lco;Z)Z"
 			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "d" : "isBlockFullCube", isObfuscated ? "(Lco;Z)Z" : "(Lnet/minecraft/util/math/BlockPos;)Z");
@@ -171,15 +158,14 @@ public class ClassTransformer implements IClassTransformer
 
 			return writeClassToBytes(classNode);
 		}
-		else if (transformedName.equals("net.minecraftforge.fluids.blockfluidfinite"))
+		else if (transformedName.equals("net.minecraftforge.fluids.BlockFluidFinite"))
 		{
 			ClassNode classNode = readClassFromBytes(bytes);
 			
-			//debug
-			//ClassTransformer.findNewObfValues(classNode, isEnvObfuscated, transformedName);
+			//ClassTransformer.findNewObfValues(name, transformedName, bytes, this);
 
-			MethodNode method = findMethodNodeOfClass(classNode, isEnvObfuscated ? "b" : "updateTick", isEnvObfuscated ? "(Laid;Lcm;Lars;Ljava/util/Random;)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V");
-
+			MethodNode method = findMethodNodeOfClass(classNode, isEnvObfuscated ? "b" : "updateTick", isEnvObfuscated ? "(Lajs;Lco;Latl;Ljava/util/Random;)V" : "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V");
+			
 			final String setBlockMethodName = isEnvObfuscated ? "a" : "setBlockState";
 			for (AbstractInsnNode insn = method.instructions.getFirst(); insn != null; insn = insn.getNext())
 			{
@@ -261,4 +247,32 @@ public class ClassTransformer implements IClassTransformer
 		}
 		return null;
 	}
+	
+	//once world/World is loaded, further transFormedNames must be lowercase 
+		//debug - run in debugger then build .jar and run in mod folder (look in latest log file for the same reference number)
+		protected static void findNewObfValues(String name, String transformedName, byte[] bytes, ClassTransformer objThis)
+		{
+			int counter = 0;
+			Log.log(ModInfo.debugLevel, "Found: " + transformedName);
+			boolean isObfuscated = !name.equals(transformedName);
+			ClassNode classNode = objThis.readClassFromBytes(bytes);
+			Log.log(squeek.veganoption.ModInfo.debugLevel, "----------------------------------------------------------------Class: " + classNode.name + "-------------------------------------------------------------------");
+			Log.log(ModInfo.debugLevel, "-The values -" + (isObfuscated ? "are" : "are not") + "- obfuscated.-");
+			
+			for (MethodNode method : classNode.methods)
+			{
+				Log.log(ModInfo.debugLevel, "--------------------------------");
+				counter++;
+				Log.log(squeek.veganoption.ModInfo.debugLevel, "Method Line:(" + counter + ") >>> Name:" + method.name + " -- Description:" + method.desc + " -- Signature: " + method.signature);
+				Log.log(ModInfo.debugLevel, "--------------------------------");
+			
+				if(method.instructions != null)
+					for(int i = 0; i < method.instructions.size(); i++)
+						if(method.instructions.get(i).getOpcode() == Opcodes.GETFIELD)
+						{
+							FieldInsnNode field =  (FieldInsnNode)method.instructions.get(i);
+							Log.log(ModInfo.debugLevel, "GetField Line:(" + (i + 1) + ") >>> Name: " + field.name + " -- Description: " + field.desc + " -- Owner: " + field.owner); 
+						}
+			}
+		}
 }

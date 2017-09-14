@@ -2,13 +2,11 @@ package squeek.veganoption;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,12 +19,10 @@ import squeek.veganoption.helpers.TooltipHelper;
 import squeek.veganoption.integration.IntegrationHandler;
 import squeek.veganoption.network.NetworkHandler;
 
-
-// dependency of after:* seems necessary to ensure that the RecipeModifier doesn't miss any recipes //still?
 @Mod(
-		modid = "veganoption", 
+		modid = ModInfo.MODID, 
 		name = "The Vegan Option",
-		version = "0.1.0",
+		version = "1.0.0",
 		acceptedMinecraftVersions = "1.11.2", 
 		dependencies = "required-after:forge@[13.20.1.2386,)" 
 	)

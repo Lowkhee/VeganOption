@@ -9,7 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,7 +25,6 @@ import squeek.veganoption.content.recipes.InputItemStack;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
-import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.items.ItemSoap;
 
 public class Soap implements IContentModule
@@ -80,6 +78,7 @@ public class Soap implements IContentModule
 													  bucketLyeWater.copy(),
 													  ContentHelper.vegetableOilOreDict,
 													  ContentHelper.rosinOreDict));
+		Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(soap),  new ItemStack(Items.BUCKET));
 
 		PistonCraftingRegistry.register(new PistonCraftingRecipe(fluidLyeWater, FluidRegistry.WATER, new InputItemStack(ContentHelper.woodAshOreDict, 3)));
 	}

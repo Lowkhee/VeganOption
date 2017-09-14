@@ -11,51 +11,26 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import squeek.veganoption.helpers.BlockHelper;
 import squeek.veganoption.helpers.LangHelper;
-import squeek.veganoption.ModInfo;
+import squeek.veganoption.helpers.MiscHelper;
 import squeek.veganoption.blocks.tiles.TileEntityBasin;
 
 import javax.annotation.Nonnull;
@@ -66,8 +41,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 //@Mod.EventBusSubscriber
@@ -110,15 +83,10 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 			direction = ((TileEntityBasin) tile).getValveDirection();
 		}
 		return state.withProperty(IS_OPEN, open).withProperty(FACING, direction);
+		*/
 		
-		//uneeded? saved by NBT
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityBasin)
-		{
-			((TileEntityBasin) tile).setPowered(state.getValue(IS_OPEN));
-			((TileEntityBasin) tile).setValveDirection(state.getValue(FACING));
-		}*/
-		return super.getActualState(state, world, pos);
+		
+		return world.getBlockState(pos);
 	}
 
 	@Nonnull
@@ -165,30 +133,27 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	}
 
 	/*
-	 * Events - this will not account for a BlockFluidFinite if it is not the source block since all flow is a blockitem
+	 * Events - this will not account for a BlockFluidFinite if it is not the source block since all flow is a blockitem?
 	 */
 	@Override
 	public void neighborChanged(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockChanged, BlockPos posChanged)
 	{
-		super.neighborChanged(state, world, pos, blockChanged, posChanged);
+		//super.neighborChanged(state, world, pos, blockChanged, posChanged);
 
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityBasin)
 		{
 			boolean isPowered = world.isBlockPowered(pos);
-			if(isPowered != state.getValue(IS_OPEN))
-			{
-				world.setBlockState(pos, state.withProperty(IS_OPEN, isPowered), 2);//.withProperty(FACING, state.getValue(FACING)), 2);
-				((TileEntityBasin) tile).setPowered(isPowered);
-			}
-			//EnumFacing facing = world.getBlockState(pos).getValue(FACING);
+			TileEntityBasin tileBasin = (TileEntityBasin) tile;
+			if(isPowered != tileBasin.isPowered() || isPowered != state.getValue(IS_OPEN))
+				world.setBlockState(pos, state.withProperty(IS_OPEN, isPowered), 2);
 			
 			boolean isSolidSide = this.isSideSolid(state, BlockHelper.sideBlockLocated(pos, posChanged));
 			
 			//save for hopper or any other connection
 			
 			if(!isSolidSide)
-				((TileEntityBasin) tile).consumeFluidAtValve(world, posChanged);
+				tileBasin.consumeFluidAtValve(world, posChanged);
 			//if(!isSolidSide && blockChanged instanceof BlockFluidBase)
 			//	((TileEntityBasin) tile).scheduleFluidConsume();
 		}
@@ -254,17 +219,17 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	@Override
 	public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
-		super.onBlockPlacedBy(world, pos, state, placer, stack);
 		EnumFacing facing = placer.getLookVec().yCoord <= -.8 ? EnumFacing.UP : placer.getLookVec().yCoord >= .8 ? EnumFacing.DOWN : placer.getHorizontalFacing().getOpposite();
 		boolean powered = world.isBlockPowered(pos);
-		world.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
-		TileEntity tile = world.getTileEntity(pos);
+		/*TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityBasin)
 		{
 			((TileEntityBasin) tile).setPowered(powered);
 			//((TileEntityBasin) tile).scheduleFluidConsume();
 			((TileEntityBasin) tile).setValveDirection(facing);
-		}
+		}*/
+		world.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
     }
 
 	/*
@@ -275,7 +240,6 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
 		super.onBlockAdded(world, pos, state);
-		
 	}
 
 	/*
@@ -285,54 +249,7 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
-		
-		
-		/*TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof TileEntityBasin)
-		{
-			IFluidHandler fluidHandlerBasin = (IFluidHandler)((TileEntityBasin)tile).getBasinTank();
-			IItemHandler itemHandlerInventory = new PlayerMainInvWrapper(player.inventory);
-			//if(!(player.inventoryContainer. instanceof IItemHandler))
-			//	return false;
-			//IItemHandler itemHandlerInventory = (IItemHandler)player.inventoryContainer;
-			
-			Item itemHeld = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem();
-			IFluidHandlerItem fluidHandlerItem = FluidUtil.getFluidHandler(new ItemStack(itemHeld, 1));
-			if(fluidHandlerItem == null)
-				return false;
-			//if(itemHeld.getContainerItem() == Items.BUCKET || itemHeld.getContainerItem() instanceof net.minecraftforge.fluids.UniversalBucket || itemHeld.getContainerItem() == Items.GLASS_BOTTLE)
-			//{	
-				FluidStack fluidStackItem = fluidHandlerItem.drain(Integer.MAX_VALUE, false);
-				
-				if(fluidStackItem == null)
-					FluidUtil.tryFillContainerAndStow(new ItemStack(itemHeld, 1), fluidHandlerBasin, itemHandlerInventory, Fluid.BUCKET_VOLUME, player);
-				else
-					FluidUtil.tryEmptyContainerAndStow(new ItemStack(itemHeld, 1), fluidHandlerBasin, itemHandlerInventory, Fluid.BUCKET_VOLUME, player);
-			//}
-	
-		}
-		return tile instanceof TileEntityBasin && ((TileEntityBasin) tile).onBlockActivated(player, hand, side, hitX, hitY, hitZ);*/
 	}
-	
-	/*private static class BasinEvent extends Event
-	{
-		
-	@SubscribeEvent
-	public static void onRightClick(PlayerInteractEvent.RightClickBlock event)
-	{
-		Log.log(ModInfo.debugLevel, "Right Clicked Block");
-		//Item itemRightHand = event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem();
-		//if(itemRightHand == (new ItemStack(Blocks.TORCH, 1).getItem()))
-			if(event.getFace() != null && event.getFace() != event.getWorld().getBlockState(event.getPos()).getValue(FACING))
-			{
-				event.setCanceled(true);
-				event.setUseItem(Result.DENY);
-				event.setUseBlock(Result.DENY);
-				event.setCanceled(true);
-				event.setCancellationResult(EnumActionResult.FAIL);
-			}
-	}
-	}*/
 
 	/*
 	 * Bounding box/collisions
@@ -444,8 +361,8 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		{
 			for (EnumFacing side : EnumFacing.VALUES)
 			{
-				if (side == EnumFacing.UP)
-					continue;
+				//if (side == EnumFacing.UP)
+					//continue;
 
 				List<AxisAlignedBB> AABBs = new ArrayList<AxisAlignedBB>(4);
 
@@ -529,7 +446,26 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 		if (basin == null)
 			return;
 		probeInfo.text(LangHelper.translate("info.basin." + (basin.isPowered() ? "open" : "closed")));
+		probeInfo.text(LangHelper.translate("info.basin." + basin.getValveDirection().getName()));
 
+	}
+	
+
+	public float getFilledPercent(World world, BlockPos pos)
+	{
+		return (float) this.getBasinFluidAmount(world, pos) / this.getBasinCapacity(world, pos);
+	}
+
+	@Override
+	public boolean hasComparatorInputOverride(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos)
+	{
+		return MathHelper.floor(getFilledPercent(world, pos) * MiscHelper.MAX_REDSTONE_SIGNAL_STRENGTH);
 	}
 	
 	

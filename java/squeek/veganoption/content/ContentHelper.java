@@ -62,8 +62,10 @@ public class ContentHelper
 	public static final String fertilizerOreDict = "fertilizerOrganic"; // IC2's oredict entry
 	public static final String pufferFishOreDict = "reagentWaterBreathing";
 	public static final String soapOreDict = "soap";
-	public static final String poisonousOreDict = "reagentPoisonous";
-	public static final String fermentedOreDict = "reagentFermented";
+	//public static final String poisonousOreDict = "reagentPoisonous";
+	//public static final String fermentedOreDict = "reagentFermented";
+	public static final String poisonousOreDict = "spider_eye";
+	public static final String fermentedOreDict = "fermented_spider_eye";
 	public static final String sulfurOreDict = "dustSulfur"; // This is what other mods use
 	public static final String saltpeterOreDict = "dustSaltpeter"; // This is what other mods use
 	public static final String stickOreDict = "stickWood"; // Forge's oredict entry

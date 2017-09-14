@@ -13,6 +13,7 @@ import squeek.veganoption.ModInfo;
 import squeek.veganoption.VeganOption;
 import squeek.veganoption.content.ContentHelper;
 import squeek.veganoption.content.IContentModule;
+import squeek.veganoption.content.Modifiers;
 import squeek.veganoption.content.registry.CompostRegistry;
 
 // currently depends on potatoStarch
@@ -53,6 +54,7 @@ public class MobHeads implements IContentModule
 	public void recipes()
 	{
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(papierMache, 8), new ItemStack(Items.WATER_BUCKET), ContentHelper.starchOreDict, new ItemStack(Items.PAPER), new ItemStack(Items.PAPER), new ItemStack(Items.PAPER), new ItemStack(Items.PAPER)));
+		Modifiers.crafting.addInputsToKeepForOutput(new ItemStack(papierMache, 8),  new ItemStack(Items.BUCKET));
 
 		GameRegistry.addShapedRecipe(new ItemStack(mobHeadBlank), "///", "/m/", "///", '/', new ItemStack(papierMache), 'm', new ItemStack(Blocks.MELON_BLOCK));
 

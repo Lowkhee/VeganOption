@@ -1,3 +1,5 @@
+ext.config = loadConfig(file('build.properties'))
+
 buildscript {
 	repositories {
 		jcenter()
@@ -17,24 +19,50 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 minecraft {
-
-	runDir = "run"
-
-	coreMod = "squeek.veganoption.asm.ASMPlugin"
-
-	version = "13.20.1.2386"
 	
-	mappings = "snapshot_20161220"
+	runDir = "${config.run_dir}"
+
+	coreMod = "${config.core_mod}"
+
+	version = "${config.forge_version}"
+	
+	mappings = "${config.mcp_mappings}"
+	
+	
+	//replace "\${mod_name}", "${config.mod_name}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${mod_id}", "${config.mod_id}"
+	//replaceIn "ModInfo.java"
+
+	//replace "\${mod_version}", "${config.mod_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_mc_version}", "${config.minecraft_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_forge_version}", "${config.forge_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_jei_version}", "${config.jei_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_waila_version}", "${config.waila_version}"
+	//replaceIn "ModInfo.java"
+	
+	//replace "\${required_theoneprobe_version}", "${config.theoneprobe_version}"
+	//replaceIn "ModInfo.java"
 }
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-group = project.projectDir.name.toLowerCase()
-archivesBaseName = project.projectDir.name
+group = "${config.mod_group}"
+archivesBaseName ="${config.mod_name}" + "-" + "${config.minecraft_version}" + "-" + "${config.forge_version}" 
+version = "${config.mod_version}" 
 
 if (version == "unspecified")
-	version = "0.2.0"
+	version = "0.5.0"
 if (System.getenv("BUILD_NUMBER") != null)
 	version += (version ? "+" : "") + "${System.getenv("BUILD_NUMBER")}"
 if (System.getenv("GIT_COMMIT") != null)
@@ -58,12 +86,12 @@ repositories {
 }
  
 dependencies {
-	deobfCompile "mcjty.theoneprobe:TheOneProbe:1.1x-1.4.7-57:api"
-	deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
+	deobfCompile "mcjty.theoneprobe:TheOneProbe:" + "${config.theoneprobe_version}" + ":api"
+	deobfCompile "mcp.mobius.waila:Waila:" + "${config.waila_version}"
 	// compile against the JEI API
-	deobfCompile "mezz.jei:jei_1.11.2:4.5.0.290:api"
+	deobfCompile "mezz.jei:jei_1.11.2:" + "${config.jei_version}" + ":api"
 	// at runtime, use the full JEI jar
-	runtime "mezz.jei:jei_1.11.2:4.5.0.290"
+	runtime "mezz.jei:jei_1.11.2:" + "${config.jei_version}"
 
 	testCompile 'junit:junit:4.11'
 }
@@ -170,4 +198,12 @@ if (curseApiKey) {
 			}
 		}
 	}
+}
+
+static def loadConfig(File config) {
+	def props = new Properties()
+	config.withInputStream {
+		stream -> props.load(stream)
+	}
+	return new ConfigSlurper().parse(props)
 }

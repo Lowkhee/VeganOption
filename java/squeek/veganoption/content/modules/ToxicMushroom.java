@@ -1,13 +1,17 @@
 package squeek.veganoption.content.modules;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,10 +49,10 @@ public class ToxicMushroom implements IContentModule
 	@Override
 	public void oredict()
 	{
-		OreDictionary.registerOre(ContentHelper.poisonousOreDict, Items.SPIDER_EYE);
-		OreDictionary.registerOre(ContentHelper.poisonousOreDict, falseMorel);
-		OreDictionary.registerOre(ContentHelper.fermentedOreDict, Items.FERMENTED_SPIDER_EYE);
-		OreDictionary.registerOre(ContentHelper.fermentedOreDict, falseMorelFermented);
+		//OreDictionary.registerOre(ContentHelper.poisonousOreDict, new ItemStack(Items.SPIDER_EYE));
+		OreDictionary.registerOre(ContentHelper.poisonousOreDict, new ItemStack(falseMorel));
+		//OreDictionary.registerOre(ContentHelper.fermentedOreDict, new ItemStack(Items.FERMENTED_SPIDER_EYE));
+		OreDictionary.registerOre(ContentHelper.fermentedOreDict, new ItemStack(falseMorelFermented));
 	}
 
 	@Override
@@ -56,8 +60,26 @@ public class ToxicMushroom implements IContentModule
 	{
 		Modifiers.recipes.convertInput(new ItemStack(Items.SPIDER_EYE), ContentHelper.poisonousOreDict);
 		Modifiers.recipes.excludeOutput(new ItemStack(Items.FERMENTED_SPIDER_EYE));
-
 		Modifiers.recipes.convertInput(new ItemStack(Items.FERMENTED_SPIDER_EYE), ContentHelper.fermentedOreDict);
+		
+		Predicate<ItemStack> predicateFalseMorel = new PotionHelper.ItemPredicateInstance(falseMorel);
+		Predicate<ItemStack> predicateFalseMorelFermented = new PotionHelper.ItemPredicateInstance(falseMorelFermented);
+		
+		PotionHelper.registerPotionTypeConversion(PotionTypes.WATER, predicateFalseMorel, PotionTypes.MUNDANE);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.AWKWARD, predicateFalseMorel, PotionTypes.POISON);
+		
+		PotionHelper.registerPotionTypeConversion(PotionTypes.NIGHT_VISION, predicateFalseMorelFermented, PotionTypes.INVISIBILITY);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.LONG_NIGHT_VISION, predicateFalseMorelFermented, PotionTypes.LONG_INVISIBILITY);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.LEAPING, predicateFalseMorelFermented, PotionTypes.SLOWNESS);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.LONG_LEAPING, predicateFalseMorelFermented, PotionTypes.LONG_SLOWNESS);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.SWIFTNESS, predicateFalseMorelFermented, PotionTypes.SLOWNESS);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.LONG_SWIFTNESS, predicateFalseMorelFermented, PotionTypes.LONG_SLOWNESS);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.HEALING, predicateFalseMorelFermented, PotionTypes.HARMING);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.STRONG_HEALING, predicateFalseMorelFermented, PotionTypes.STRONG_HARMING);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.POISON, predicateFalseMorelFermented, PotionTypes.HARMING);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.LONG_POISON, predicateFalseMorelFermented, PotionTypes.HARMING);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.STRONG_POISON, predicateFalseMorelFermented, PotionTypes.STRONG_HARMING);
+		PotionHelper.registerPotionTypeConversion(PotionTypes.WATER, predicateFalseMorelFermented, PotionTypes.WEAKNESS);
 
 		DropSpecifier dontDropWhenSilkTouching = new DropSpecifier(new ItemStack(falseMorel), 0.15f)
 		{

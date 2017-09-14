@@ -7,8 +7,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import squeek.veganoption.helpers.RandomHelper;
 import org.apache.logging.log4j.*;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,15 +73,15 @@ public class CraftingModifier
 				Log.log(squeek.veganoption.ModInfo.debugLevel,"Crafting slot item: " + stackInSlot.getDisplayName());
 				for (ItemStack inputToRemove : inputsToRemove)
 				{
-					Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Remove: " + inputToRemove.getDisplayName());
+					
 					if (OreDictionary.itemMatches(inputToRemove, stackInSlot, false))
 					{
-							//stackInSlot.shrink(inputToRemove.getCount());
+						Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Remove: " + inputToRemove.getDisplayName());
 						if (stackInSlot.getCount() <= 1)
 							if(event.crafting.getItem().getUnlocalizedName().equals("item.forge.bucketFilled"))
-								event.craftMatrix.setInventorySlotContents(i, new ItemStack(Items.WATER_BUCKET.setContainerItem(null))); //ItemStack.EMPTY -> unable to find recipe without an Item in slot
+								event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1)); //ItemStack.EMPTY -> unable to find recipe without an Item in slot
 							else if(event.crafting.getItem().getContainerItem().getUnlocalizedName().equals("item.glassBottle"))
-								event.craftMatrix.setInventorySlotContents(i, new ItemStack(Items.GLASS_BOTTLE.setContainerItem(null)));
+								event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1));
 							else
 								event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY); 
 						break;

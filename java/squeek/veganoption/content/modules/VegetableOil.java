@@ -27,7 +27,6 @@ import squeek.veganoption.content.modifiers.DropsModifier.DropSpecifier;
 import squeek.veganoption.content.recipes.PistonCraftingRecipe;
 import squeek.veganoption.content.registry.PistonCraftingRegistry;
 import squeek.veganoption.content.registry.RelationshipRegistry;
-import squeek.veganoption.helpers.FluidHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

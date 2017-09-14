@@ -113,6 +113,14 @@ public class Composting implements IContentModule
 		CompostRegistry.addGreen(Blocks.RED_FLOWER);
 		CompostRegistry.addGreen(Blocks.BROWN_MUSHROOM);
 		CompostRegistry.addGreen(Blocks.RED_MUSHROOM);
+		CompostRegistry.addGreen(Items.APPLE);
+		CompostRegistry.addGreen(Items.BEETROOT);
+		CompostRegistry.addGreen(Items.CARROT);
+		CompostRegistry.addGreen(Items.WHEAT);
+		CompostRegistry.addGreen(Items.POTATO);
+		CompostRegistry.addGreen(Blocks.WATERLILY);
+		CompostRegistry.addGreen(Items.BREAD);
+		
 
 		CompostRegistry.blacklist(new FoodSpecifier()
 		{

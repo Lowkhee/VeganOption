@@ -250,7 +250,7 @@ public class DropsModifier
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onGetHarvestDrops(BlockEvent.HarvestDropsEvent event)
 	{
-		Block block = event.getState().getBlock();
+		//Block block = event.getState().getBlock();
 		for (Entry<BlockSpecifier, DropSpecifier> blockDropSpecifier : blockDrops.entrySet())
 		{
 			if (blockDropSpecifier.getKey().matches(event.getWorld(), event.getPos(), event.getState()))

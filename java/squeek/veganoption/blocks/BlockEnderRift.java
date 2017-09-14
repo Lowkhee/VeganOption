@@ -18,12 +18,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import squeek.veganoption.blocks.tiles.TileEntityBasin;
 import squeek.veganoption.blocks.tiles.TileEntityEnderRift;
 import squeek.veganoption.content.modules.Ender;
 import squeek.veganoption.helpers.BlockHelper;
+import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.helpers.MiscHelper;
 import squeek.veganoption.helpers.RandomHelper;
 import squeek.veganoption.network.MessageFX;
@@ -86,7 +89,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 
 		BlockPos aboveBlockPos = pos.up();
 		BlockPos belowBlockPos = pos.down();
-		if (BlockHelper.isWater(world, aboveBlockPos) && world.getBlockState(belowBlockPos).getBlock().isReplaceable(world, belowBlockPos))
+		if (BlockHelper.isWater(world, aboveBlockPos))// && world.getBlockState(belowBlockPos).getBlock().isReplaceable(world, belowBlockPos))
 		{
 			BlockPos sourceBlockToConsume = BlockHelper.followWaterStreamToSourceBlock(world, pos, aboveBlockPos);
 			if (sourceBlockToConsume != null)
@@ -96,12 +99,23 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 				if (!world.isDaytime())
 				{
 					//get a list of air blocks below the rift -> set flow to second to last air block -> create a raw ender source block at last airblock
-					BlockPos blockRawEnderPos = (BlockHelper.findFirstSolidBlock(world, pos, EnumFacing.DOWN)).offset(EnumFacing.UP);
+					//BlockPos blockRawEnderPos = (BlockHelper.findFirstSolidBlock(world, pos, EnumFacing.DOWN)).offset(EnumFacing.UP);
 					IBlockState rawEnderBlock = Ender.rawEnder.getDefaultState().withProperty(BlockFluidBase.LEVEL, 7);
-					world.setBlockState(belowBlockPos, rawEnderBlock, 2); //block update below the rift
+					TileEntity tile = world.getTileEntity(belowBlockPos);
+					TileEntityBasin tileBasin = null;
+					if (tile instanceof TileEntityBasin)
+						tileBasin = ((TileEntityBasin)tile);
+					if(tileBasin != null && tileBasin.isPowered() && tileBasin.getValveDirection().compareTo(EnumFacing.UP) == 0)
+					{
+						FluidStack fluidStack = new FluidStack(Ender.fluidRawEnder, (int)(1000 - Math.round(1000.0 * (float)(FluidHelper.getFluidStability(Ender.fluidRawEnder).ordinal() * .10))));
+						if(tileBasin.fluidTank.canFillFluidType(fluidStack))
+							tileBasin.fluidTank.fill(fluidStack, true);
+					}
+					else
+						world.setBlockState(belowBlockPos, rawEnderBlock, 2); //block update below the rift
 					//may not be necessary
 					//((BlockRawEnder)rawEnderBlock.getBlock()).tryToFlowVerticallyInto(world, blockRawEnderPos, 1000);
-					world.setBlockState(blockRawEnderPos, rawEnderBlock, 2); //Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
+					//world.setBlockState(blockRawEnderPos, rawEnderBlock, 2); //Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
 					
 				}
 				else
@@ -145,8 +159,6 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block changedBlock, BlockPos fromPos)
 	{
-		super.neighborChanged(state, world, pos, changedBlock, fromPos);
-
 		if (!canPlaceBlockAt(world, pos))
 			world.setBlockToAir(pos);
 	}

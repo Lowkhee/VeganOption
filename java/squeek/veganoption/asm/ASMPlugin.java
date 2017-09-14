@@ -15,7 +15,7 @@ public class ASMPlugin implements IFMLLoadingPlugin
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		Log.log(squeek.veganoption.ModInfo.debugLevel, "getASMTransformerClass() called.");
+		//Log.log(squeek.veganoption.ModInfo.debugLevel, "getASMTransformerClass() called.");
 		return new String[]{ClassTransformer.class.getName()};
 	}
 
@@ -34,7 +34,7 @@ public class ASMPlugin implements IFMLLoadingPlugin
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
-		Log.log(squeek.veganoption.ModInfo.debugLevel, "injectData(Map<String, Object> data) called.");
+		//Log.log(squeek.veganoption.ModInfo.debugLevel, "injectData(Map<String, Object> data) called.");
 		ClassTransformer.isEnvObfuscated = (Boolean) data.get("runtimeDeobfuscationEnabled");
 	}
 
