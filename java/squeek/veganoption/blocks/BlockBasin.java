@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -74,19 +75,21 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	@Override
 	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) //called second on save load
 	{
-		/*TileEntity tile = BlockHelper.getTileEntitySafely(world, pos);
+		TileEntity tile = BlockHelper.getTileEntitySafely(world, pos);
 		boolean open = false; 
 		EnumFacing direction = EnumFacing.UP;
-		if (tile != null && tile instanceof TileEntityBasin)
+		TileEntityBasin tileBasin = TileEntityBasin.getBasinEntityAt(tile.getWorld(), pos);
+		if (tileBasin != null)
 		{
-			open = ((TileEntityBasin) tile).isOpen();
-			direction = ((TileEntityBasin) tile).getValveDirection();
+			open = tileBasin.isOpen();
+			direction = tileBasin.getValveDirection();
+			
 		}
 		return state.withProperty(IS_OPEN, open).withProperty(FACING, direction);
-		*/
 		
 		
-		return world.getBlockState(pos);
+		
+		//return world.getBlockState(pos);
 	}
 
 	@Nonnull
@@ -117,8 +120,9 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	/*
 	 * Returns false when valve side and is powered, which allows for powering from valve (nice quirk?)
 	 */
-	//@Override		isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
-	public boolean isSideSolid(IBlockState state, EnumFacing side)
+	@Override		
+	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
+	//public boolean isSideSolid(IBlockState state, EnumFacing side)
 	{
 		if (side == state.getValue(FACING) && (boolean)state.getValue(IS_OPEN))
 			return false;
@@ -138,24 +142,16 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	@Override
 	public void neighborChanged(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockChanged, BlockPos posChanged)
 	{
-		//super.neighborChanged(state, world, pos, blockChanged, posChanged);
-
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityBasin)
+		TileEntityBasin tileBasin = TileEntityBasin.getBasinEntityAt(world, pos);
+		if (tileBasin != null)
 		{
 			boolean isPowered = world.isBlockPowered(pos);
-			TileEntityBasin tileBasin = (TileEntityBasin) tile;
-			if(isPowered != tileBasin.isPowered() || isPowered != state.getValue(IS_OPEN))
-				world.setBlockState(pos, state.withProperty(IS_OPEN, isPowered), 2);
+			tileBasin.setPowered(isPowered);
+			world.setBlockState(pos, state.withProperty(IS_OPEN, isPowered), 2);
 			
-			boolean isSolidSide = this.isSideSolid(state, BlockHelper.sideBlockLocated(pos, posChanged));
-			
-			//save for hopper or any other connection
-			
-			if(!isSolidSide)
+			//tileBasin.onTileUpdate(state, world.getBlockState(pos));
+			if(isPowered && BlockHelper.sideBlockLocated(pos, posChanged).compareTo(state.getValue(FACING)) == 0)
 				tileBasin.consumeFluidAtValve(world, posChanged);
-			//if(!isSolidSide && blockChanged instanceof BlockFluidBase)
-			//	((TileEntityBasin) tile).scheduleFluidConsume();
 		}
 		
 	}
@@ -221,13 +217,6 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
     {
 		EnumFacing facing = placer.getLookVec().yCoord <= -.8 ? EnumFacing.UP : placer.getLookVec().yCoord >= .8 ? EnumFacing.DOWN : placer.getHorizontalFacing().getOpposite();
 		boolean powered = world.isBlockPowered(pos);
-		/*TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityBasin)
-		{
-			((TileEntityBasin) tile).setPowered(powered);
-			//((TileEntityBasin) tile).scheduleFluidConsume();
-			((TileEntityBasin) tile).setValveDirection(facing);
-		}*/
 		world.setBlockState(pos, state.withProperty(IS_OPEN, powered).withProperty(FACING, facing), 2);
 		super.onBlockPlacedBy(world, pos, state, placer, stack);
     }
@@ -248,7 +237,10 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof TileEntityBasin)
+			return ((TileEntityBasin) tile).onBlockActivated(player, hand, side, hitX, hitY, hitZ);
+		return false;
 	}
 
 	/*

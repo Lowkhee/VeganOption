@@ -196,7 +196,8 @@ public class FluidContainerHelper
 			Block blockItem = Block.getBlockFromItem(heldItem);
 			if(blockItem == Blocks.TORCH || blockItem == Blocks.REDSTONE_TORCH)
 				cancelEvent = true;
-		}
+		}		
+		
 		if(cancelEvent)
 		{
 			eventCanceled = true;

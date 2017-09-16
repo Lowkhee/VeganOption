@@ -6,13 +6,16 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,12 +25,14 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import squeek.veganoption.ModInfo;
 import squeek.veganoption.blocks.BlockBasin;
 import squeek.veganoption.content.modules.Basin;
+import squeek.veganoption.content.modules.Ender;
 import squeek.veganoption.helpers.BlockHelper;
 import squeek.veganoption.helpers.FluidContainerHelper;
 import squeek.veganoption.helpers.FluidHelper;
 import squeek.veganoption.helpers.MiscHelper;
 import squeek.veganoption.helpers.WorldHelper;
-
+import squeek.veganoption.items.ItemFrozenBubble;
+import squeek.veganoption.items.ItemWashableWheat;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -45,12 +50,6 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public FluidTank fluidTank = new BasinTank(Fluid.BUCKET_VOLUME*10); //10000=10 buckets
 	protected boolean isPowered = false;
 	protected EnumFacing valveDirection = EnumFacing.UP;
-	protected boolean fluidConsumeStopped = true;
-	protected int ticksUntilNextFluidConsume = FLUID_CONSUME_TICK_PERIOD; 
-	protected int ticksUntilNextContainerFill = CONTAINER_FILL_TICK_PERIOD;
-
-	public static int FLUID_CONSUME_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
-	public static int CONTAINER_FILL_TICK_PERIOD = MiscHelper.TICKS_PER_SEC;
 	
 
 	/*
@@ -62,6 +61,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		if (world.isRemote)
 			return;
 		
+		//Basin leaks if not facing up and is open
 		IBlockState blockStateFrontValve = BlockHelper.getBlockStateOnFace(world, pos, this.valveDirection);
 		if(isPowered && !isBasinEmpty() && this.valveDirection != EnumFacing.UP && blockStateFrontValve != null && blockStateFrontValve.getMaterial() == Material.AIR)
 		{
@@ -93,38 +93,20 @@ public class TileEntityBasin extends TileEntity implements ITickable
 				}
 			}
 		}
+		//allows finite fluid to consumed by basin if not a direct source block
 		else if(isPowered && blockStateFrontValve != null && blockStateFrontValve.getBlock() instanceof BlockFluidFinite)
 		{
 			Log.log(ModInfo.debugLevel, "Consume Finite Fluid: " + blockStateFrontValve.getBlock().getUnlocalizedName());
 			this.consumeFluidAtValve(world, pos.offset(this.valveDirection));
-			this.onFluidLevelChange();
 		}
+		//removes leaking fluid
 		else if(isPowered && blockStateFrontValve != null && this.valveDirection != EnumFacing.UP)
 		{
 			Fluid fluidAtValve = FluidHelper.getFluidTypeOfBlock(blockStateFrontValve);
 			if(fluidAtValve != null && !blockStateFrontValve.isFullBlock()) //!this.isBasinEmpty() && (this.fluidTank.getFluid().getFluid() == fluidAtValve || 
 				world.setBlockState(pos.offset(this.valveDirection), Blocks.AIR.getDefaultState(), 2);
 		}
-		//if(isPowered())
-		//	consumeFluidAtValve(world, pos);
-		/*if (shouldConsumeFluid())
-		{
-			boolean didConsume = tryConsumeFluidAbove();
-			if (didConsume)
-				scheduleFluidConsume();
-			else
-				endFluidConsume();
-		}
-		else
-			ticksUntilNextFluidConsume = Math.max(0, ticksUntilNextFluidConsume - 1);
-
-		if (shouldFillContainers())
-		{
-			tryFillContainersInside();
-			scheduleFillContainers();
-		}
-		else
-			ticksUntilNextContainerFill = Math.max(0, ticksUntilNextContainerFill - 1);*/
+	
 	}
 
 	/*
@@ -135,12 +117,8 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return isOpen() && fluidTank.getFluidAmount() > 0;
 	}
 
-	/*public boolean shouldFillContainers()
-	{
-		return couldFillContainers() && ticksUntilNextContainerFill <= 0;
-	}*/
 
-	public boolean tryFillContainersInside()
+	/*public boolean tryFillContainersInside()
 	{
 		if (world == null || world.isRemote || !couldFillContainers())
 			return false;
@@ -166,53 +144,6 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		}
 
 		return false;
-	}
-
-	/*public void scheduleFillContainers(int ticksUntilContainerFill)
-	{
-		if (ticksUntilNextContainerFill == 0)
-			ticksUntilNextContainerFill = ticksUntilContainerFill;
-		else
-			ticksUntilNextContainerFill = Math.min(ticksUntilNextContainerFill, ticksUntilContainerFill);
-	}
-
-	public void scheduleFillContainers()
-	{
-		scheduleFillContainers(CONTAINER_FILL_TICK_PERIOD);
-	}*/
-
-	/*
-	 * Fluid consuming behavior
-	 */
-	/*public boolean couldConsumeFluid()
-	{
-		return isOpen() && fluidTank.getFluidAmount() != fluidTank.getCapacity();
-	}
-
-	public boolean shouldConsumeFluid()
-	{
-		return couldConsumeFluid() && !fluidConsumeStopped && ticksUntilNextFluidConsume <= 0;
-	}
-
-	public boolean tryConsumeFluidAbove()
-	{
-		if (world == null || world.isRemote || !couldConsumeFluid())
-			return false;
-
-		BlockPos blockPosAbove = pos.up();
-		IBlockState stateAbove = world.getBlockState(blockPosAbove);
-		Fluid fluidAbove = FluidHelper.getFluidTypeOfBlock(stateAbove);
-
-		if (fluidAbove == null)
-			return false;
-
-		FluidStack fluidToAdd = FluidHelper.consumeFluid(world, pos, blockPosAbove, fluidAbove, fluidTank.getCapacity() - fluidTank.getFluidAmount());
-
-		if (fluidToAdd == null || !fluidTank.canFillFluidType(fluidToAdd))
-			return false;
-
-		fluidTank.fill(fluidToAdd, true);
-		return true;
 	}*/
 	
 	/*
@@ -314,52 +245,10 @@ public class TileEntityBasin extends TileEntity implements ITickable
 			//fluidStackDrained = fluidHandlerSource.drain(fluidSrcTransferAmt, true); //what is the point of Amount? returns null if Amount is less than FluidBlockWrapper#108#simulatedDrain.amount, which is the full amount
 			fluidStackDrained.amount = fluidSrcTransferAmt;
 			this.fluidTank.fill(fluidStackDrained, true);
-			//dissovle remaining, if source block
-			/*if(isFluidSourceBlock)// && !(blockSourceFluid instanceof BlockFluidFinite))
-			{
-				((BlockFluidBase)stateFluidSource.getBlock()).setDensity(fluidSrcLossAmt);
-				//fluidStackDrained.amount = 	fluidSrcLossAmt;			
-				//fluidBlock.place(world, posFluidSource, fluidStackDrained, isFluidSourceBlock);
-				//make block unbreakable?
-				//fluidStackDrained = fluidHandlerSource.drain(Integer.MAX_VALUE, false);
-				world.setBlockState(posFluidSource, stateFluidSource.withProperty(BlockFluidBase.LEVEL, 1), 2);
-				//stateFluidSource.getBlock().isBlockSolid(worldIn, posFluidSource, side);
-				stateFluidSource.getBlock().requiresUpdates();
-				//stateFluidSource.getBlock().setBlockUnbreakable();
-				stateFluidSource.getBlock().randomDisplayTick(stateFluidSource, world, posFluidSource, new Random());
-				//stateFluidSource.getBlock().neighborChanged(stateFluidSource, world, posFluidSource, stateFluidSource.getBlock(), this.pos);
-				
-				//BlockFluidFinite placerholderBlock = new BlockFluidFinite(fluidStackDrained.getFluid(), stateFluidSource.getMaterial());
-				//placerholderBlock.updateTick(world, posFluidSource, stateFluidSource, new Random());
-			}*/
-			
-			/////basin leaks when not facing up with air block
 		}
 		
 		return 0;
 	}
-
-	/*public void scheduleFluidConsume(int ticksUntilFluidConsume)
-	{
-		if (ticksUntilFluidConsume == 0)
-			tryConsumeFluidAbove();
-		else if (ticksUntilNextFluidConsume == 0)
-			ticksUntilNextFluidConsume = ticksUntilFluidConsume;
-		else
-			ticksUntilNextFluidConsume = Math.min(ticksUntilNextFluidConsume, ticksUntilFluidConsume);
-
-		fluidConsumeStopped = false;
-	}
-
-	public void scheduleFluidConsume()
-	{
-		scheduleFluidConsume(FLUID_CONSUME_TICK_PERIOD);
-	}
-
-	public void endFluidConsume()
-	{
-		fluidConsumeStopped = true;
-	}*/
 
 	/*
 	 * Open/closed state
@@ -374,67 +263,32 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return !isOpen();
 	}
 
-	/*public void onOpen()
-	{
-		scheduleFluidConsume();
-	}
-
-	public void onClose()
-	{
-		endFluidConsume();
-	}*/
-
-	//Following methods incorporated into FluidCotainerHelper
 	/*
 	 * Right Click Handling
+	 * The majority of Basin fluid handling is incorporated into FluidCotainerHelper
 	 */
-	/*public boolean onBlockActivated(EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		ItemStack heldItem = player.getHeldItem(hand);
-		if (FluidContainerHelper.isItemFluidContainer(heldItem))
+		ItemStack heldItemStack = player.getHeldItem(hand);
+		net.minecraft.item.Item heldItem = heldItemStack.getItem();
+		//FrozenBubble directly usable on basin
+		if(heldItem instanceof ItemFrozenBubble && this.getBasinTankAmount() >= Fluid.BUCKET_VOLUME && this.getBasinTankFluid().getFluid() == Ender.fluidRawEnder)
 		{
-			// DoneTODO: This would be better moved directly into FluidContainerHelper
-			IFluidHandler containerCap = FluidUtil.getFluidHandler(heldItem);
-			if (containerCap == null)
-				return false;
-			for (IFluidTankProperties tankProp : containerCap.getTankProperties())
-			{
-				FluidStack containerFluid = tankProp.getContents();
-				if (containerFluid != null && fluidTank.fill(containerFluid, false) == containerFluid.amount)
-				{
-					ItemStack toDrain = heldItem.splitStack(1);
-					FluidContainerHelper.drainContainerIntoHandler(toDrain, fluidTank);
-					tryAddItemToInventory(player, hand, toDrain);
-					return true;
-				} else if (fluidTank.getFluidAmount() > 0)
-				{
-					ItemStack toFill = heldItem.splitStack(1);
-					FluidContainerHelper.drainHandlerIntoContainer(fluidTank, fluidTank.getFluid(), toFill);
-					tryAddItemToInventory(player, hand, toFill);
-					return true;
-				}
-			}
+			heldItemStack.splitStack(1);
+			this.fluidTank.drainInternal(Fluid.BUCKET_VOLUME, true);
+			FluidContainerHelper.tryAddItemToInventory(player, hand, new ItemStack(Items.ENDER_PEARL, 1));
+			return true;	
 		}
+		else if(heldItem instanceof ItemWashableWheat && !ItemWashableWheat.isReadyToCook(heldItemStack) && this.getBasinTankAmount() >= Fluid.BUCKET_VOLUME && this.getBasinTankFluid().getFluid() == FluidRegistry.WATER)
+		{
+			ItemStack itemStackCrafted = heldItemStack.splitStack(1);
+			this.fluidTank.drainInternal(Fluid.BUCKET_VOLUME, true);
+			FluidContainerHelper.tryAddItemToInventory(player, hand, ItemWashableWheat.wash(itemStackCrafted, 1)); 
+			return true;
+		}
+		
 		return false;
-	}*/
-
-	/**
-	 * Attempts to add an item to the player's inventory in the following order:
-	 * 1. Their current hand if there is no held item, or the held item has a stack size of 0
-	 * 2. The first open slot in their inventory
-	 * 3. Dropped in the world, if there is no free slot in the inventory.
-	 */
-	/*private void tryAddItemToInventory(EntityPlayer player, EnumHand hand, ItemStack newItem)
-	{
-		ItemStack heldItem = player.getHeldItem(hand);
-		if (heldItem.isEmpty())
-		{
-			player.setHeldItem(hand, newItem);
-			return;
-		}
-		if (!player.inventory.addItemStackToInventory(newItem))
-			player.dropItem(newItem, false);
-	}*/
+	}
 	
 	/*
 	 * get valve direction
@@ -449,72 +303,48 @@ public class TileEntityBasin extends TileEntity implements ITickable
 	public void setValveDirection(EnumFacing direction)
 	{
 		this.valveDirection = direction;
+		onTileUpdate();
 	}
-
-	/*
-	 * Redstone Power Handling
-	 */
-	public void setPowered(boolean isPowered)
+	
+	public void setPowered(boolean boolPowered)
 	{
-		if (isPowered != isPowered())
-		{
-			this.isPowered = isPowered;
-
-			if (isPowered)
-				onPowered();
-			else
-				onUnpowered();
-
-			if (world != null)
-				world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 0);
-		}
+		this.isPowered = boolPowered;
+		onTileUpdate();
 	}
 
 	public boolean isPowered()
 	{
 		return isPowered;
 	}
-
-	public void onPowered()
+	
+	public void onTileUpdate()
 	{
 		if (world != null)
+		{
 			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
-
-		//onOpen();
-	}
-
-	public void onUnpowered()
-	{
-		if (world != null)
-			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
-
-		//onClose();
+			world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 0);
+		}
 	}
 	
-	/*
-	 * call everytime the basin tank drains or fills
-	 */
-	public void onFluidLevelChange()
+	public static TileEntityBasin getBasinEntityAt(@Nonnull World world, @Nonnull BlockPos pos)
 	{
-		if (world != null)
-		{
-			world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 0);
-			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
-		}
+		TileEntity tile = BlockHelper.getTileEntitySafely(world, pos); //world.getTileEntity(pos);
+		if (tile instanceof TileEntityBasin)
+			return (TileEntityBasin)tile;
+		return null;
 	}
-
-	/*
-	 * Fluid Handling
-	 */
-	public void onFluidLevelChanged(IFluidTank tank, FluidStack fluidDelta)
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
 	{
-		if (world != null)
-		{
-			world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 0);
-			world.notifyNeighborsOfStateChange(pos, Basin.basin, true);
-			//scheduleFluidConsume();
-		}
+		return (oldState.getBlock() != newState.getBlock());
 	}
+	
+	@Override
+	public void markDirty()
+    {
+		super.markDirty();
+    }
 
 	/*
 	 * Synced data
@@ -527,15 +357,16 @@ public class TileEntityBasin extends TileEntity implements ITickable
 			fluidTank.setFluid(null);
 
 		this.setValveDirection(EnumFacing.values()[compound.getInteger("Facing")]);
-		setPowered(compound.getBoolean("Powered"));
+		this.isPowered = compound.getBoolean("Powered");
 	}
 
 	public void writeSyncedNBT(NBTTagCompound compound)
 	{
-		if (fluidTank.getFluid() != null)
+		TileEntityBasin tileBasin = TileEntityBasin.getBasinEntityAt(world, pos);
+		if (tileBasin != null && tileBasin.fluidTank.getFluid() != null)
 		{
 			NBTTagCompound fluidTag = new NBTTagCompound();
-			fluidTank.getFluid().writeToNBT(fluidTag);
+			tileBasin.fluidTank.getFluid().writeToNBT(fluidTag);
 			compound.setTag("Fluid", fluidTag);
 		}
 		IBlockState state = world.getBlockState(pos);
@@ -549,12 +380,14 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		compound.setBoolean("Powered", isPowered());
 	}
 
+	//some tile entity data packet received - 2
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
 		handleUpdateTag(pkt.getNbtCompound());
 	}
 
+	//1
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
@@ -570,10 +403,11 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		return tag;
 	}
 
+	//3
 	@Override
 	public void handleUpdateTag(@Nonnull NBTTagCompound tag)
 	{
-		readSyncedNBT(tag);
+		readFromNBT(tag);
 	}
 
 	/*
@@ -585,15 +419,6 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		super.readFromNBT(compound);
 
 		readSyncedNBT(compound);
-
-		/*if (compound.hasKey("NextConsume"))
-		{
-			scheduleFluidConsume(compound.getInteger("NextConsume"));
-		}
-		else
-		{
-			endFluidConsume();
-		}*/
 	}
 
 	/*
@@ -607,11 +432,6 @@ public class TileEntityBasin extends TileEntity implements ITickable
 		compound = super.writeToNBT(compound);
 
 		writeSyncedNBT(compound);
-
-		/*if (!fluidConsumeStopped)
-		{
-			compound.setInteger("NextConsume", ticksUntilNextFluidConsume);
-		}*/
 
 		return compound;
 	}
@@ -644,7 +464,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 			int amountFilled = super.fill(resource, doFill);
 
 			if (doFill && amountFilled > 0)
-				onFluidLevelChanged(this, new FluidStack(resource.getFluid(), amountFilled));
+				onTileUpdate();
 
 			return amountFilled;
 		}
@@ -664,7 +484,7 @@ public class TileEntityBasin extends TileEntity implements ITickable
 			FluidStack drainedStack = super.drain(maxDrain, doDrain);
 
 			if (doDrain && drainedStack != null && drainedStack.amount > 0)
-				onFluidLevelChanged(this, drainedStack.copy());
+				onTileUpdate();
 
 			return drainedStack;
 		}

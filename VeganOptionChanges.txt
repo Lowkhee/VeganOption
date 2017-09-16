@@ -12,8 +12,8 @@ Vegan Option
 11. DONE: bucket recipes are doubling leftover ingrediants (Milk/Lye) - cause: bucket is removed before (CraftingModifier) recipe search(net.minecraft.inventory.CraftingManager)->unable to find recipe - fix: CraftingModifier (line 83->86) replace water bucket without a container
 12. DONE: bucket items (milk/raw/lye) are not in the creative tab
 13. ~~~ add retted jute bundle to creative tab and jei - juteBundled.rettedItem.setCreativeTab(VeganOption.creativeTab); in jute.java line: 73
-14. ~~compost as farmland alternative?
-15. ~~what are passive compost benefits on adjacent farmland?
+14. ~~~ add flow input block to bottom of basin to fill or drain / grate
+15. DONE:what are passive compost benefits on adjacent farmland? growables need to be directly horizontally adjacent or above (compost->farm block->plant)
 16. !!!ItemStack - check all references for @nonnull
 17. DONE:add more borwn for composter:stick, wood? if included already, unablee to add stick
 18. DONE: check vegtableoil.java again - ink recipes using 2x vegoil bottle per - cause by Modifiers.crafting.addInputsToRemoveForOutput (line:115 & 120) - these are only necessary when waterBottle (vegoil) = 1
@@ -22,11 +22,11 @@ Vegan Option
 21. ~~Create advanced multi block to include mashing(piston), pressurizing(pressure plate), mixing(dough)
 22. ~~add tofu as option
 23. DONE:Basin: change basin to have fluid stability check, certain fluids should not flow out - bucket/bottle not usable on basin, fill or empty --- DONE: see#27 1 block below rift - directly under(0 blocks below) does nothing -does not create full rawender block
-24. ~~~Make frozenbubble directly usable on basin?
+24. DONE: Make frozenbubble and ItemWashableWheat directly usable on basin
 25. Done: raw ender should be a full block - is full when contained
 26. DONE: glassbottle pickup veg oil, inks, soap solution, lye, rawender, milk = water bottle - PlayerControllerMP.class call net.minecraftforge.common.ForgeHooks.onItemRightClickAction(player, stack); results in NULL instead of PASS/DENY - the problem is a player interact with block(fluid) checks the variant item(fluid), and results in a water bottle - resolved by creating a new event FluidContainerHelper.playerRightClickItem
 27. DONE: see#23 - changed raw ender to spawn at block below rift-> then to flow to the lowest solid block, both cause block update->disovle fluid if not full bucket - see BlockRawEnder and BlockEnderRift
-28. ~~~make basin usable with pipes from other mods
+28. DONE: Uneccesary - need to provide provention if non desired effects- make basin usable with pipes from other mods -seems to work with pressure pipes
 29. DONE:see#23-basin - powering block changes direction of top/intake - 
 30. !BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
 31. !RenderBasin#renderTileEntity is called continously, is it necessary?
@@ -46,11 +46,11 @@ Vegan Option
 43. DONE: Rendering for TileEntityBasin#update for BlockLiquid and BlockFluidFinite Models for leaking
 44. DONE:apple sauce should require a piston for mashing?
 45. !!!JEI - using depricated methods - update - 
-46. !!Composter - add green - wheat
+46. DONE:Composter - add green - wheat - added many vegatables
 47. !!!Creativetab/jei - Bucket Rawender has no recipe - Bedstraw has different notation - jutefibre displays unretted jutebundle - blank mob head > add recipe for variations? 
 48. DONE: Recipes - soap solution > consumes bucket - papier mache > consumes bucket - blaze rod > increase flint and steel usage - wheat > wheat dough > raw seitan > consumes bucket > false morel not listed as fermented spider eye replacement
 49. ~!~Additions: Prismarine Shard/Prismarine Crystals alternative? sea Guardian drop/ lantern silk touch - Shulker Shell > shulkers - Rabbit foot alt
-50. !test caomparator on Basin
+50. DONE:test caomparator on Basin
 
 
 
