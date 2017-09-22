@@ -92,12 +92,13 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 		if (BlockHelper.isWater(world, aboveBlockPos))// && world.getBlockState(belowBlockPos).getBlock().isReplaceable(world, belowBlockPos))
 		{
 			BlockPos sourceBlockToConsume = BlockHelper.followWaterStreamToSourceBlock(world, pos, aboveBlockPos);
-			if (sourceBlockToConsume != null)
-			{
-				world.setBlockToAir(sourceBlockToConsume);
+			//if (sourceBlockToConsume != null)
+			//{
+				//world.setBlockToAir(sourceBlockToConsume);
 
-				if (!world.isDaytime())
+				if (sourceBlockToConsume != null && !world.isDaytime())
 				{
+					world.setBlockToAir(sourceBlockToConsume);
 					//get a list of air blocks below the rift -> set flow to second to last air block -> create a raw ender source block at last airblock
 					//BlockPos blockRawEnderPos = (BlockHelper.findFirstSolidBlock(world, pos, EnumFacing.DOWN)).offset(EnumFacing.UP);
 					IBlockState rawEnderBlock = Ender.rawEnder.getDefaultState().withProperty(BlockFluidBase.LEVEL, 7);
@@ -118,7 +119,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 					//world.setBlockState(blockRawEnderPos, rawEnderBlock, 2); //Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
 					
 				}
-				else
+				else //only do if source block equals null
 				{
 					BlockPos[] blocksInRadius = BlockHelper.getBlocksInRadiusAround(pos, BLOCK_TELEPORT_RADIUS);
 					blocksInRadius = BlockHelper.filterBlockListToBreakableBlocks(world, blocksInRadius);
@@ -126,6 +127,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 					{
 						// TODO: teleport block to the end?
 						BlockPos blockPosToSwallow = blocksInRadius[RandomHelper.random.nextInt(blocksInRadius.length)];
+						
 						world.setBlockToAir(blockPosToSwallow);
 						world.playSound(blockPosToSwallow.getX(), blockPosToSwallow.getY(), blockPosToSwallow.getZ(), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, true);
 
@@ -136,7 +138,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 						}
 					}
 				}
-			}
+			//}
 		}
 	}
 

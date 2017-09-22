@@ -100,10 +100,15 @@ public class Composting implements IContentModule
 		CompostRegistry.addBrown(Blocks.DEADBUSH);
 		CompostRegistry.addBrown(ContentHelper.sawDustOreDict);
 		CompostRegistry.addBrown(ContentHelper.sawDustAltOreDict);
+		CompostRegistry.addBrown(Items.WHEAT_SEEDS);
+		CompostRegistry.addBrown(VegetableOil.seedSunflower);
+		CompostRegistry.addBrown(Jute.juteSeeds);
+		CompostRegistry.addBrown(Jute.juteFibre);
 
 		CompostRegistry.addGreen(ContentHelper.saplingOreDict);
 		CompostRegistry.addGreen(rottenPlants);
 		CompostRegistry.addGreen(Blocks.TALLGRASS);
+		CompostRegistry.addGreen(Blocks.GRASS);
 		CompostRegistry.addGreen(Blocks.DOUBLE_PLANT);
 		CompostRegistry.addGreen(ContentHelper.leavesOreDict);
 		CompostRegistry.addGreen(Blocks.PUMPKIN);
@@ -120,6 +125,7 @@ public class Composting implements IContentModule
 		CompostRegistry.addGreen(Items.POTATO);
 		CompostRegistry.addGreen(Blocks.WATERLILY);
 		CompostRegistry.addGreen(Items.BREAD);
+		CompostRegistry.addGreen(Jute.juteStalk);
 		
 
 		CompostRegistry.blacklist(new FoodSpecifier()

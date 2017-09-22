@@ -28,7 +28,7 @@ Vegan Option
 27. DONE: see#23 - changed raw ender to spawn at block below rift-> then to flow to the lowest solid block, both cause block update->disovle fluid if not full bucket - see BlockRawEnder and BlockEnderRift
 28. DONE: Uneccesary - need to provide provention if non desired effects- make basin usable with pipes from other mods -seems to work with pressure pipes
 29. DONE:see#23-basin - powering block changes direction of top/intake - 
-30. !BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
+30. DONE: BlockBasin#addCollisionBoxToList, what is the point of this method? called everytime player is within a certain distance, and adds a direct block collision to the method variable collingBoundingBox, which only resets after method
 31. !RenderBasin#renderTileEntity is called continously, is it necessary?
 32. DONE:see#29-placing basin next to power source doesnt update is_powered(open), only when adding powersource or doing blockupdate around it- onBlockAdded was not changing the actual blockstate
 33. DONE:BlockBasin has a constant update to isSideSolid (to check powered), possibly change to check during blockupdate 
@@ -49,8 +49,14 @@ Vegan Option
 46. DONE:Composter - add green - wheat - added many vegatables
 47. !!!Creativetab/jei - Bucket Rawender has no recipe - Bedstraw has different notation - jutefibre displays unretted jutebundle - blank mob head > add recipe for variations? 
 48. DONE: Recipes - soap solution > consumes bucket - papier mache > consumes bucket - blaze rod > increase flint and steel usage - wheat > wheat dough > raw seitan > consumes bucket > false morel not listed as fermented spider eye replacement
-49. ~!~Additions: Prismarine Shard/Prismarine Crystals alternative? sea Guardian drop/ lantern silk touch - Shulker Shell > shulkers - Rabbit foot alt
+49. ~!~Additions: Prismarine Shard/Prismarine Crystals alternative? sea Guardian drop/ lantern silk touch - Shulker Shell > shulkers - Rabbit foot alt - dragon egg (raise a bunny/cat) - nether star 
 50. DONE:test caomparator on Basin
+51. prismarine shard/crystal - shulker shell = found at the deepest levels of an ocean? mining shells? growing crystals and shells?
+52. !!!Jute - bottom breaks in farm - only a seed - check for full growth and provide bounty from breaking top or bottom, or make more like sugarcane! break top, rest grows -- 
+53. ?!!composting- additions do not appear to work for compost
+54. ~~~integrate with forestry - seeds, 
+55. ~~~IC2 - "crop" integration
+56.  ~~~do something with dirt and cobblestone
 
 
 
@@ -62,8 +68,8 @@ Vegan Option
 
 
 
-
-
+Updates:
+1. More items added to composting
 
 
 
