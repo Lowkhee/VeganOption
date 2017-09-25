@@ -9,7 +9,7 @@ public final class ModInfo
 	public static final String MODNAME = "VeganOption"; //"${mod_name}";
 	public static final String MODID = "veganoption"; //"${mod_id}";
 	//public static final String MODID = MODID.toLowerCase(Locale.ROOT);
-	public static final String MODVERSION = "1.0.0"; //"${mod_version}";
+	public static final String MODVERSION = "1.0.1"; //"${mod_version}";
 	public static final String MCVERSION = "1.11.2"; //"${required_mc_version}";
 	public static final String FORGEVERSION = "13.20.1.2386"; //"${required_forge_version}";
 	//public static final String JEIVERSION = "${required_jei_version}";

@@ -44,7 +44,7 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 	public static final int BOTTOM_META_FULL = NUM_BOTTOM_STAGES;
 	public static final int TOP_META_START = BOTTOM_META_FULL + 1;
 	public static final int META_MAX = TOP_META_START + NUM_TOP_STAGES;
-	public static final float GROWTH_CHANCE_PER_UPDATETICK = 0.10f;
+	public static final float GROWTH_CHANCE_PER_UPDATETICK = 0.20f;
 
 	public static final PropertyBool HAS_TOP = PropertyBool.create("has_top");
 	public static final PropertyEnum<BlockDoublePlant.EnumBlockHalf> HALF = BlockDoublePlant.HALF;
@@ -73,7 +73,7 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 		boolean isTop = isTop(state);
 		int max = isTop ? NUM_TOP_STAGES : NUM_BOTTOM_STAGES;
 		int stage = state.getValue(GROWTH_STAGE);
-		int individualStage = isTop ? stage - TOP_META_START : stage;
+		int individualStage = isTop ?  stage - TOP_META_START : stage; //TOP_META_START - stage : stage;
 		float growthPercent = (float) individualStage / max;
 		return new AxisAlignedBB(0.15F, 0.0F, 0.15F, 0.85F, 0.25f + growthPercent * 0.75f, 0.85F);
 	}
@@ -81,26 +81,33 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		int stage = state.getValue(GROWTH_STAGE);
-		return Math.min(META_MAX, isTop(state) ? TOP_META_START + stage : stage);
+		int growthStage = state.getValue(GROWTH_STAGE); 
+		boolean hasTop = state.getValue(HAS_TOP);
+		return hasTop && growthStage == 6 ? growthStage + 6 : growthStage;
 	}
 
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		boolean isTop = meta >= TOP_META_START;
+		boolean hasTop = false;
+		if(meta > 11)
+		{
+			hasTop = true;
+			meta = meta - 6;
+		}
+		
 		return getDefaultState()
-			.withProperty(GROWTH_STAGE, isTop ? meta - TOP_META_START : meta)
-			.withProperty(HALF, isTop ? BlockDoublePlant.EnumBlockHalf.UPPER : BlockDoublePlant.EnumBlockHalf.LOWER);
+			.withProperty(GROWTH_STAGE, meta)
+			.withProperty(HALF, meta > 6 ? BlockDoublePlant.EnumBlockHalf.UPPER : BlockDoublePlant.EnumBlockHalf.LOWER)
+			.withProperty(HAS_TOP, hasTop ? true : false);
 	}
 
 	@Nonnull
 	@Override
-	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess block, BlockPos pos)
 	{
-		boolean isTop = state.getValue(HALF) == BlockDoublePlant.EnumBlockHalf.LOWER;
-		return state.withProperty(HAS_TOP, isTop && world.getBlockState(pos.up()).getBlock() == this);
+		return block.getBlockState(pos);
 	}
 
 	@Override
@@ -123,7 +130,7 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 
 		int oldGrowthStage = state.getValue(GROWTH_STAGE);
 
-		if (hasTop(world, pos))
+		if (hasTop(world, pos)) //redundant, should never be called based on line 198
 		{
 			deltaGrowth(world, pos.up(), world.getBlockState(pos.up()), delta);
 			return;
@@ -133,25 +140,21 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 
 		if (isFullyGrown(newGrowthStage))
 		{
-			Blocks.DOUBLE_PLANT.placeAt(world, pos.down(), BlockDoublePlant.EnumPlantType.FERN, 3);
+			BlockPos position = state.getValue(HALF) == BlockDoublePlant.EnumBlockHalf.UPPER ? pos.down() : pos;
+			world.setBlockState(position, Blocks.AIR.getDefaultState());
+			world.setBlockState(position.up(), Blocks.AIR.getDefaultState());
+			Blocks.DOUBLE_PLANT.placeAt(world, position, BlockDoublePlant.EnumPlantType.byMetadata(3), 3); //3 = FERN
 		}
 		else
-		{
-			boolean isGrowingToTop = !isTop(state) && newGrowthStage >= NUM_BOTTOM_STAGES;
-			if (!isGrowingToTop)
+		{			
+			if (!isTop(state) && oldGrowthStage >= NUM_BOTTOM_STAGES && world.isAirBlock(pos.up()))
 			{
-				world.setBlockState(pos, state.withProperty(GROWTH_STAGE, newGrowthStage), 3);
-			}
-			else if (world.isAirBlock(pos.up()))
-			{
-				world.setBlockState(pos, state.withProperty(GROWTH_STAGE, NUM_BOTTOM_STAGES - 1));
-				world.setBlockState(pos.up(), getDefaultState().withProperty(GROWTH_STAGE, newGrowthStage).withProperty(HALF, BlockDoublePlant.EnumBlockHalf.UPPER));
+				world.setBlockState(pos, state.withProperty(GROWTH_STAGE, NUM_BOTTOM_STAGES).withProperty(HAS_TOP, true));
+				world.setBlockState(pos.up(), getDefaultState().withProperty(GROWTH_STAGE, newGrowthStage).withProperty(HALF, BlockDoublePlant.EnumBlockHalf.UPPER).withProperty(HAS_TOP, false));
 			}
 			else
 			{
-				newGrowthStage = Math.min(newGrowthStage, NUM_BOTTOM_STAGES);
-				if (newGrowthStage != oldGrowthStage)
-					world.setBlockState(pos, state.withProperty(GROWTH_STAGE, newGrowthStage));
+				world.setBlockState(pos, state.withProperty(GROWTH_STAGE, newGrowthStage), 3);
 			}
 		}
 	}
@@ -220,7 +223,7 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 		return true;
 	}
 
-	@Override
+	@Override //never called?
 	public void grow(@Nonnull World world, @Nonnull Random random, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		int deltaGrowth = MathHelper.getInt(random, 2, 5);

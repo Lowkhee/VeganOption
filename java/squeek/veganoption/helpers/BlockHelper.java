@@ -176,7 +176,10 @@ public class BlockHelper
 		//	return blockPos;
 		
 		if(fluid.getBlock() instanceof BlockFluidFinite || FluidHelper.getFluidLevel(world, posFrom) == FluidHelper.getStillFluidLevel(fluid))
-			return posFrom;
+		{
+			Fluid fluidSource = FluidHelper.getFluidTypeOfBlock(world.getBlockState(posFrom));
+			return fluidSource != null && fluid.getName().equals(fluidSource.getName()) ? posFrom : null;
+		}
 
 		List<BlockPos> blocksToCheck = new ArrayList<BlockPos>(Arrays.asList(getHorizontalBlocksAdjacentTo(posFrom)));
 		blocksToCheck.add(posFrom.offset(EnumFacing.UP));
@@ -380,4 +383,14 @@ public class BlockHelper
 	        return null;
 	    
 	    }
+	 
+	 /*
+	  * Finds first Air Block in the direction
+	  */
+	 public static BlockPos findNonCollidingBlockOnPath(@Nonnull BlockPos posFrom, @Nonnull BlockPos posAt)
+	 {
+		 sideBlockLocated(posAt, posFrom);
+		 Iterable<BlockPos> iterateBlocks = BlockPos.getAllInBox(posFrom, posAt);
+		 return posAt;
+	 }
 }

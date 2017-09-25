@@ -52,14 +52,26 @@ Vegan Option
 49. ~!~Additions: Prismarine Shard/Prismarine Crystals alternative? sea Guardian drop/ lantern silk touch - Shulker Shell > shulkers - Rabbit foot alt - dragon egg (raise a bunny/cat) - nether star 
 50. DONE:test caomparator on Basin
 51. prismarine shard/crystal - shulker shell = found at the deepest levels of an ocean? mining shells? growing crystals and shells?
-52. !!!Jute - bottom breaks in farm - only a seed - check for full growth and provide bounty from breaking top or bottom, or make more like sugarcane! break top, rest grows -- 
-53. ?!!composting- additions do not appear to work for compost
-54. ~~~integrate with forestry - seeds, 
+52. DONE:Jute - bottom breaks in farm - only a seed - check for full growth and provide bounty from breaking top or bottom, or make more like sugarcane! break top, rest grows -- 
+53. DONE:composting- additions do not appear to work for compost
+54. ~~~integrate with forestry - seeds, compost (Fermentor)
 55. ~~~IC2 - "crop" integration
 56.  ~~~do something with dirt and cobblestone
+57. DONE:Filling frozen bubble with water creates Ender pearl
+58. DONE:Frozen Bubble bounding box collision - going through blocks 
+59. DONE:Soap bottle full use destroy bottle
+60. DONE: change enderrift to only destroy water blocks during the day
+61. !!!add dirt to compost in limited supply
+62. DONE:jute plant randomly disappearing
 
 
+Upcoming Changes/Fixes
 
+Frozen Bubble - Collision Issues, ie.. passes through blocks - Filling with water creates ender pearl, huh? nope.
+Soap Solution - destroys bottle on use, doesn't make sense to me
+Ender Rift - destroys blocks around it. As a builder, I find this annoying since I put time into design. Currently, rift+basin already produces a loss, so the change will be to only destroy water blocks during the day.
+Jute stalks - breaking bottom produces only one seed at full growth, this doesn't make sense.
+Composting - adding dirt in limited supply. Makes sense, and dirt needs more uses.
 
 
 
@@ -69,9 +81,10 @@ Vegan Option
 
 
 Updates:
-1. More items added to composting
-
-
+JutePlant resolved
+Soap bottle
+Frozen Bubble
+EnderRift
 
 
 

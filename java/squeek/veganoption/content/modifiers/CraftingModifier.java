@@ -71,35 +71,34 @@ public class CraftingModifier
 			if (!stackInSlot.isEmpty())
 			{
 				Log.log(squeek.veganoption.ModInfo.debugLevel,"Crafting slot item: " + stackInSlot.getDisplayName());
-				for (ItemStack inputToRemove : inputsToRemove)
-				{
-					
-					if (OreDictionary.itemMatches(inputToRemove, stackInSlot, false))
+				if(!inputsToRemove.isEmpty())
+					for (ItemStack inputToRemove : inputsToRemove)
 					{
-						Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Remove: " + inputToRemove.getDisplayName());
-						if (stackInSlot.getCount() <= 1)
-							if(event.crafting.getItem().getUnlocalizedName().equals("item.forge.bucketFilled"))
-								event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1)); //ItemStack.EMPTY -> unable to find recipe without an Item in slot
-							else if(event.crafting.getItem().getContainerItem().getUnlocalizedName().equals("item.glassBottle"))
-								event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1));
-							else
-								event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY); 
-						break;
-					}
-				}
-				for (ItemStack inputToKeep : inputsToKeep)
-				{
-					Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Keep: " + inputToKeep.getDisplayName());
-					if (OreDictionary.itemMatches(inputToKeep, stackInSlot, false))
-					{
-						stackInSlot.grow(inputToKeep.getCount());
-						if (stackInSlot.isItemStackDamageable() && stackInSlot.attemptDamageItem(inputToKeep.getCount(), RandomHelper.random))
+						if (OreDictionary.itemMatches(inputToRemove, stackInSlot, false))
 						{
-							stackInSlot.shrink(1);
+							Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Remove: " + inputToRemove.getDisplayName());
+							if (stackInSlot.getCount() <= 1)
+								if(event.crafting.getItem().getUnlocalizedName().equals("item.forge.bucketFilled"))
+									event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1)); //ItemStack.EMPTY -> unable to find recipe without an Item in slot
+								else if(event.crafting.getItem().getContainerItem().getUnlocalizedName().equals("item.glassBottle"))
+									event.craftMatrix.setInventorySlotContents(i, new ItemStack(stackInSlot.getItem().setContainerItem(null), 1));
+								else
+									event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY); 
+							break;
 						}
-						break;
 					}
-				}
+				if(!inputsToKeep.isEmpty())
+					for (ItemStack inputToKeep : inputsToKeep)
+					{
+						Log.log(squeek.veganoption.ModInfo.debugLevel,"Input to Keep: " + inputToKeep.getDisplayName());
+						if (OreDictionary.itemMatches(inputToKeep, stackInSlot, false))
+						{
+							stackInSlot.grow(inputToKeep.getCount());
+							if (stackInSlot.isItemStackDamageable() && stackInSlot.attemptDamageItem(inputToKeep.getCount(), RandomHelper.random))
+							stackInSlot.shrink(1);
+							break;
+						}
+					}
 			}
 		}
 	}

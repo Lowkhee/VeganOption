@@ -22,7 +22,7 @@ import squeek.veganoption.network.NetworkHandler;
 @Mod(
 		modid = ModInfo.MODID, 
 		name = "The Vegan Option",
-		version = "1.0.0",
+		version = "1.0.1",
 		acceptedMinecraftVersions = "1.11.2", 
 		dependencies = "required-after:forge@[13.20.1.2386,)" 
 	)

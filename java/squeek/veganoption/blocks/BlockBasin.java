@@ -86,10 +86,6 @@ public class BlockBasin extends Block implements IHollowBlock, IProbeInfoAccesso
 			
 		}
 		return state.withProperty(IS_OPEN, open).withProperty(FACING, direction);
-		
-		
-		
-		//return world.getBlockState(pos);
 	}
 
 	@Nonnull

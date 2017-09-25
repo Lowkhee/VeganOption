@@ -119,7 +119,18 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 					//world.setBlockState(blockRawEnderPos, rawEnderBlock, 2); //Ender.rawEnder.getDefaultState(), 1); //cause blockupdate at end of flow
 					
 				}
-				else //only do if source block equals null
+				else if(sourceBlockToConsume != null && world.isDaytime())
+				{
+					world.setBlockToAir(sourceBlockToConsume);
+					world.playSound(sourceBlockToConsume.getX(), sourceBlockToConsume.getY(), sourceBlockToConsume.getZ(), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, true);
+
+					if (!world.isRemote)
+					{
+						NetworkRegistry.TargetPoint target = new NetworkRegistry.TargetPoint(world.provider.getDimension(), sourceBlockToConsume.getX(), sourceBlockToConsume.getY(), sourceBlockToConsume.getZ(), 80);
+						NetworkHandler.channel.sendToAllAround(new MessageFX(sourceBlockToConsume.getX(), sourceBlockToConsume.getY(), sourceBlockToConsume.getZ(), MessageFX.FX.BLOCK_TELEPORT), target);
+					}
+				}
+				/*else //only do if source block equals null
 				{
 					BlockPos[] blocksInRadius = BlockHelper.getBlocksInRadiusAround(pos, BLOCK_TELEPORT_RADIUS);
 					blocksInRadius = BlockHelper.filterBlockListToBreakableBlocks(world, blocksInRadius);
@@ -137,7 +148,7 @@ public class BlockEnderRift extends BlockEndPortal implements IFluidFlowHandler
 							NetworkHandler.channel.sendToAllAround(new MessageFX(blockPosToSwallow.getX(), blockPosToSwallow.getY(), blockPosToSwallow.getZ(), MessageFX.FX.BLOCK_TELEPORT), target);
 						}
 					}
-				}
+				}*/
 			//}
 		}
 	}

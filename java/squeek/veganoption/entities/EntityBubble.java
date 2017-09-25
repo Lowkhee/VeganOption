@@ -1,13 +1,16 @@
 package squeek.veganoption.entities;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -75,12 +78,13 @@ public class EntityBubble extends EntityThrowable
 			return;
 		}
 
+		BlockPos freezePos =  new BlockPos(posX, posY, posZ);
 		float surroundingTemp = getSurroundingAirTemperature(world, new BlockPos(posX, posY, posZ));
 		temperature += (surroundingTemp - temperature) * 0.05f;
 
 		if (!this.world.isRemote && temperature <= FREEZING_TEMPERATURE)
 		{
-			freeze();
+			freeze(freezePos);
 			return;
 		}
 
@@ -119,12 +123,21 @@ public class EntityBubble extends EntityThrowable
 		}
 	}
 
-	public void freeze()
+	public void freeze(BlockPos posFreezePoint)
 	{
 		if (!this.world.isRemote)
 		{
-			EntityItem frozenBubble = new EntityItem(world, posX, posY, posZ, new ItemStack(FrozenBubble.frozenBubble));
+			EntityItem frozenBubble = new EntityItem(world, posX, posY, posZ, new ItemStack(FrozenBubble.frozenBubble));//posFreezePoint.getX(), posFreezePoint.getY(), posFreezePoint.getZ(), new ItemStack(FrozenBubble.frozenBubble));
+			float xMove = -(float)(posX - posFreezePoint.getX());
+			float zMove = -(float)(posZ - posFreezePoint.getZ());
+			//frozenBubble.motionX = 0.0;
+			
+			//frozenBubble.noClip = true;
+			frozenBubble.entityCollisionReduction = 0; 
+			frozenBubble.moveRelative((float).5, xMove, (float)0);
 			world.spawnEntity(frozenBubble);
+			//frozenBubble.move(MoverType.SELF, posFreezePoint.getX(), posFreezePoint.getY(), posFreezePoint.getZ());
+			//frozenBubble.moveRelative(strafe, forward, friction);
 			this.setDead();
 		}
 	}
@@ -178,4 +191,5 @@ public class EntityBubble extends EntityThrowable
 		tag.setFloat("temperature", temperature);
 		tag.setInteger("lifetime", lifetime);
 	}
+	
 }

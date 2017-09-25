@@ -7,6 +7,7 @@ import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,9 +58,9 @@ public class ItemSoapSolution extends Item
 
 		itemStack.damageItem(1, player);
 
-		if (itemStack.getCount() == 0 && getContainerItem() != null)
+		if (itemStack.getCount() == 0)// && getContainerItem() != null)
 		{
-			return new ItemStack(getContainerItem());
+			return new ItemStack(Items.GLASS_BOTTLE, 1); //getContainerItem());
 		}
 
 		return super.onItemUseFinish(itemStack, world, player);
@@ -95,9 +96,9 @@ public class ItemSoapSolution extends Item
 			{
 				itemStack.setCount(0);
 			}
-			if (itemStack.getCount() == 0 && itemStack.getItem().getContainerItem() != null)
+			if (itemStack.getCount() == 0) // && itemStack.getItem().getContainerItem() != null)
 			{
-				return new ItemStack(itemStack.getItem().getContainerItem());
+				return new ItemStack(Items.GLASS_BOTTLE, 1); //itemStack.getItem().getContainerItem());
 			}
 			return itemStack;
 		}
