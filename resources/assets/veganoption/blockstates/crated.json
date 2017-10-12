@@ -1,0 +1,15 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "forge:multi-layer",
+        "custom": {
+            "base": "veganoption:crate#crate",
+            "Solid": "veganoption:crate#crate"
+        },
+        "transform": "forge:default-item"
+     },
+    "variants": {
+      "normal": [{}],
+      "inventory": [{}]
+    }
+}

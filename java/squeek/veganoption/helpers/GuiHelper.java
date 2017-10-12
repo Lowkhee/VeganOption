@@ -7,15 +7,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import squeek.veganoption.VeganOption;
+import squeek.veganoption.backpack.BackpackGuiHandler;
 import squeek.veganoption.blocks.tiles.TileEntityComposter;
 import squeek.veganoption.gui.GuiComposter;
 import squeek.veganoption.inventory.ContainerComposter;
 
 public class GuiHelper implements IGuiHandler
 {
-	public enum GuiIds
+	public static enum GuiIds
 	{
-		COMPOSTER
+		COMPOSTER,
+		BACKPACK
 	}
 
 	public static final int NINE_SLOT_WIDTH = 162;
@@ -44,30 +46,43 @@ public class GuiHelper implements IGuiHandler
 	@Override
 	public Object getServerGuiElement(int guiId, EntityPlayer player, World world, int x, int y, int z)
 	{
-		return getSidedGuiElement(false, guiId, player, world, x, y, z);
+		switch(GuiIds.values()[guiId])
+		{
+			case COMPOSTER:
+				return getSidedGuiElement(false, guiId, player, world, x, y, z);
+			case BACKPACK:
+				return BackpackGuiHandler.getServer(guiId, player, world, x, y, z);
+			default:
+				return null;
+		}
 	}
 
 	@Override
 	public Object getClientGuiElement(int guiId, EntityPlayer player, World world, int x, int y, int z)
 	{
-		return getSidedGuiElement(true, guiId, player, world, x, y, z);
+		switch(GuiIds.values()[guiId])
+		{
+			case COMPOSTER:
+				return getSidedGuiElement(true, guiId, player, world, x, y, z);
+			case BACKPACK:
+				return BackpackGuiHandler.getClient(guiId, player, world, x, y, z);
+			default:
+				return null;
+		}
 	}
 
 	public Object getSidedGuiElement(boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y, int z)
 	{
-		switch (GuiIds.values()[guiId])
+		if(GuiIds.values()[guiId] == GuiIds.COMPOSTER)
 		{
-			case COMPOSTER:
-				TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-				if (tile != null && tile instanceof TileEntityComposter)
-				{
-					TileEntityComposter composter = (TileEntityComposter) tile;
-					return isClientSide ? new GuiComposter(player.inventory, composter) : new ContainerComposter(player.inventory, composter);
-				}
-				break;
-			default:
-				break;
+			TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+			if (tile != null && tile instanceof TileEntityComposter)
+			{
+				TileEntityComposter composter = (TileEntityComposter) tile;
+				return isClientSide ? new GuiComposter(player.inventory, composter) : new ContainerComposter(player.inventory, composter);
+			}
 		}
+		
 		return null;
 	}
 }

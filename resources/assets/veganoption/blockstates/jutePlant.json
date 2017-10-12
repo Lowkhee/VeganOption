@@ -3,7 +3,7 @@
 	"forge_marker": 1,
 	"defaults": {
 		
-		"model": "tinted_cross"
+		"model": "minecraft:tinted_cross"
 	},
 	"variants": {
 		"half": { "upper": {}, "lower": {} },

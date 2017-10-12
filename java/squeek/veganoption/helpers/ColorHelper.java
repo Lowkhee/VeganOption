@@ -1,5 +1,10 @@
 package squeek.veganoption.helpers;
 
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 public class ColorHelper
 {
 	public static final int DEFAULT_TEXT_COLOR = 0x404040;
@@ -70,5 +75,21 @@ public class ColorHelper
 		};
 
 		return fromRGBA(color[0], color[1], color[2], color[3]);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static class  ItemColorHandler implements IItemColor
+	{
+		public static final ItemColorHandler INSTANCE = new ItemColorHandler();
+		private ItemColorHandler(){}
+		
+		@Override
+		public int getColorFromItemstack(ItemStack stack, int tintIndex)
+	    {
+			if(stack != null && stack.getItem() instanceof IItemColor)
+				return ((IItemColor)stack.getItem()).getColorFromItemstack(stack, tintIndex);
+			return -1; //item in stack does not implement IItemColor
+	    }
+		
 	}
 }

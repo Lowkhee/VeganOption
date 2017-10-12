@@ -33,6 +33,7 @@ public class ContentHelper
 	public static final ItemStack boneMeal = new ItemStack(Items.DYE, 1, 15);
 
 	// oredict
+	public static final String paperOreDict = "paper";
 	public static final String leatherOreDict = "leather"; // Forge's oredict entry
 	public static final String woolOreDict = "materialBedding";
 	public static final String featherOreDict = "feather"; // Forge's oredict entry
@@ -181,6 +182,12 @@ public class ContentHelper
 	public static void registerTypicalItemStackModel(ItemStack stack, String name)
 	{
 		ModelLoader.setCustomModelResourceLocation(stack.getItem(), stack.getItemDamage(), new ModelResourceLocation(name, "inventory"));
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static void registerTypicalItemStackModel(Item item, int meta, String name)
+	{
+		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(name, "inventory"));
 	}
 
 	/**

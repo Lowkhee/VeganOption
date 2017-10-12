@@ -102,6 +102,21 @@ public class ItemWashableWheat extends Item
 		}
 		return false;
 	}
+	
+	public static String getName(ItemStack itemStack)
+	{
+		switch (itemStack.getItemDamage())
+		{
+			case META_FLOUR:
+				return "wheatFlour";
+			case META_DOUGH:
+				return "wheatDough";
+			case META_RAW:
+				return "seitanRaw";
+			default:
+				return "seitanRawUnwashed";
+		}
+	}
 
 	@Nonnull
 	@Override

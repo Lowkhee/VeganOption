@@ -30,9 +30,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import squeek.veganoption.content.modules.Jute;
 import squeek.veganoption.helpers.LangHelper;
+import squeek.veganoption.integration.compat.JutePlantIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.List;
 import java.util.Random;
 
 @Optional.Interface(iface = "mcjty.theoneprobe.api.IProbeInfoAccessor", modid = "theoneprobe")
@@ -83,7 +86,7 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 	{
 		int growthStage = state.getValue(GROWTH_STAGE); 
 		boolean hasTop = state.getValue(HAS_TOP);
-		return hasTop && growthStage == 6 ? growthStage + 6 : growthStage;
+		return hasTop && growthStage == NUM_BOTTOM_STAGES ? growthStage + NUM_BOTTOM_STAGES : growthStage;
 	}
 
 	@Nonnull
@@ -91,15 +94,15 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 	public IBlockState getStateFromMeta(int meta)
 	{
 		boolean hasTop = false;
-		if(meta > 11)
+		if(meta > NUM_GROWTH_STAGES)
 		{
 			hasTop = true;
-			meta = meta - 6;
+			meta = meta - NUM_BOTTOM_STAGES;
 		}
 		
 		return getDefaultState()
 			.withProperty(GROWTH_STAGE, meta)
-			.withProperty(HALF, meta > 6 ? BlockDoublePlant.EnumBlockHalf.UPPER : BlockDoublePlant.EnumBlockHalf.LOWER)
+			.withProperty(HALF, meta > NUM_BOTTOM_STAGES ? BlockDoublePlant.EnumBlockHalf.UPPER : BlockDoublePlant.EnumBlockHalf.LOWER)
 			.withProperty(HAS_TOP, hasTop ? true : false);
 	}
 
@@ -122,6 +125,15 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 	{
 		return Jute.juteSeeds;
 	}
+	
+	@Override
+	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+		List<ItemStack> listDrops = JutePlantIntegration.getIntegrationDrops(world, pos, state, fortune);
+		if(listDrops != null)
+			return listDrops;
+		return super.getDrops(world, pos, state, fortune);
+    }
 
 	public void deltaGrowth(World world, BlockPos pos, IBlockState state, int delta)
 	{
@@ -141,9 +153,12 @@ public class BlockJutePlant extends BlockBush implements IGrowable, IProbeInfoAc
 		if (isFullyGrown(newGrowthStage))
 		{
 			BlockPos position = state.getValue(HALF) == BlockDoublePlant.EnumBlockHalf.UPPER ? pos.down() : pos;
-			world.setBlockState(position, Blocks.AIR.getDefaultState());
-			world.setBlockState(position.up(), Blocks.AIR.getDefaultState());
-			Blocks.DOUBLE_PLANT.placeAt(world, position, BlockDoublePlant.EnumPlantType.byMetadata(3), 3); //3 = FERN
+			//world.setBlockState(position, Blocks.AIR.getDefaultState());
+			//world.setBlockState(position.up(), Blocks.AIR.getDefaultState());
+			IBlockState bottomFern = Blocks.DOUBLE_PLANT.getDefaultState().withProperty(BlockDoublePlant.VARIANT, BlockDoublePlant.EnumPlantType.FERN).withProperty(BlockDoublePlant.HALF, BlockDoublePlant.EnumBlockHalf.LOWER);
+			IBlockState topFern = Blocks.DOUBLE_PLANT.getDefaultState().withProperty(BlockDoublePlant.VARIANT, BlockDoublePlant.EnumPlantType.FERN).withProperty(BlockDoublePlant.HALF, BlockDoublePlant.EnumBlockHalf.UPPER);
+			world.setBlockState(position, bottomFern, 3);
+	        world.setBlockState(position.up(), topFern, 3);
 		}
 		else
 		{			

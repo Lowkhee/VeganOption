@@ -15,6 +15,7 @@ import squeek.veganoption.content.Modifiers;
 import squeek.veganoption.content.crafting.PistonCraftingHandler;
 import squeek.veganoption.helpers.FluidContainerHelper;
 import squeek.veganoption.helpers.GuiHelper;
+import squeek.veganoption.helpers.InventoryHelper;
 import squeek.veganoption.helpers.TooltipHelper;
 import squeek.veganoption.integration.IntegrationHandler;
 import squeek.veganoption.network.NetworkHandler;
@@ -22,11 +23,11 @@ import squeek.veganoption.network.NetworkHandler;
 @Mod(
 		modid = ModInfo.MODID, 
 		name = "The Vegan Option",
-		version = "1.0.1",
+		version = "1.1.0",
 		acceptedMinecraftVersions = "1.11.2", 
 		dependencies = "required-after:forge@[13.20.1.2386,)" 
 	)
-public class VeganOption
+public class VeganOption //13.20.0.2270 13.20.1.2386
 {
 	private static final Logger Log = LogManager.getLogger(VeganOption.class.getCanonicalName());
 
@@ -54,6 +55,7 @@ public class VeganOption
 		FluidContainerHelper.init();
 		GuiHelper.init();
 		TooltipHelper.init();
+		InventoryHelper.init();
 		NetworkHandler.init();
 		ContentModuleHandler.init();
 		IntegrationHandler.init();

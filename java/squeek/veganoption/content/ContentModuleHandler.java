@@ -49,6 +49,7 @@ public class ContentModuleHandler
 		modules.put("DollsEye", new DollsEye());
 		modules.put("Basin", new Basin());
 		modules.put("Seitan", new Seitan());
+		modules.put("Backpack", new Backpack());
 
 		compatModules.put("EnderBubble", new CompatEnderBubble());
 	}

@@ -183,9 +183,20 @@ public class DropsModifier
 			return RandomHelper.random.nextFloat() < dropChance && !isSilkTouching;
 		}
 
-		public int amountToDrop(EntityPlayer harvester, int fortuneLevel, boolean isSilkTouching)
+		public int amountToDrop()
 		{
 			return RandomHelper.getRandomIntFromRange(dropsMin, dropsMax);
+		}
+		
+		public List<ItemStack> getDrops()
+		{
+			List<ItemStack> drops = new ArrayList<ItemStack>();
+			
+			int amountToDrop = amountToDrop();
+			for (int i = 0; i < amountToDrop; i++)
+				drops.add(itemStack.copy());
+			
+			return drops;
 		}
 
 		public List<ItemStack> getDrops(EntityPlayer harvester, int fortuneLevel, boolean isSilkTouching)
@@ -193,7 +204,7 @@ public class DropsModifier
 			List<ItemStack> drops = new ArrayList<ItemStack>();
 			if (shouldDrop(harvester, fortuneLevel, isSilkTouching))
 			{
-				int amountToDrop = amountToDrop(harvester, fortuneLevel, isSilkTouching);
+				int amountToDrop = amountToDrop();
 				for (int i = 0; i < amountToDrop; i++)
 					drops.add(itemStack.copy());
 			}

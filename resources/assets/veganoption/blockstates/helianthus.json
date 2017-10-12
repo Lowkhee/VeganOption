@@ -1,0 +1,67 @@
+{
+	"__comment": "Growth stages: 1-5 for the bottom, and 6-9 for the top.",
+	"forge_marker": 1,
+	"variants": {
+		"half": { "upper": {}, "lower": {} },
+		"growth": {
+			"1": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_bottom_stage1"
+				},
+				"model": "veganoption:helianthus/helianthus_bottom"
+			},
+			"2": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_bottom_stage2"
+				},
+				"model": "veganoption:helianthus/helianthus_bottom"
+			},
+			"3": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_bottom_stage3"
+				},
+				"model": "veganoption:helianthus/helianthus_bottom"
+			},
+			"4": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_bottom_stage4"
+				},
+				"model": "veganoption:helianthus/helianthus_bottom"
+			},
+			"5": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_bottom_stage5"
+				},
+				"model": "veganoption:helianthus/helianthus_bottom"
+			},
+			"6": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_top_stage6"
+				},
+				"model": "veganoption:helianthus/helianthus_top_stage6"
+			},
+			"7": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_top_stage7"
+				},
+				"model": "veganoption:helianthus/helianthus_top_stage7"
+			},
+			"8": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_top_stage8"
+				},
+				"model": "veganoption:helianthus/helianthus_top_stage8"
+			},
+			"9": {
+				"textures": {
+					"cross": "veganoption:blocks/helianthus/helianthus_top_stage9"
+				},
+				"model": "veganoption:helianthus/helianthus_top_stage9"
+			}		
+		},
+		"has_top": {
+			"true": {},
+			"false": {}
+			}
+		}
+	}

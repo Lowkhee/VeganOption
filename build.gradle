@@ -62,7 +62,7 @@ archivesBaseName ="${config.mod_name}" + "-" + "${config.minecraft_version}" + "
 version = "${config.mod_version}" 
 
 if (version == "unspecified")
-	version = "0.5.0"
+	version = "1.1.0"
 if (System.getenv("BUILD_NUMBER") != null)
 	version += (version ? "+" : "") + "${System.getenv("BUILD_NUMBER")}"
 if (System.getenv("GIT_COMMIT") != null)
@@ -86,13 +86,14 @@ repositories {
 }
  
 dependencies {
+	compile files("../run/mods/forestry_1.11.2-5.3.4.155.jar")
 	deobfCompile "mcjty.theoneprobe:TheOneProbe:" + "${config.theoneprobe_version}" + ":api"
 	deobfCompile "mcp.mobius.waila:Waila:" + "${config.waila_version}"
 	// compile against the JEI API
 	deobfCompile "mezz.jei:jei_1.11.2:" + "${config.jei_version}" + ":api"
 	// at runtime, use the full JEI jar
 	runtime "mezz.jei:jei_1.11.2:" + "${config.jei_version}"
-
+	
 	testCompile 'junit:junit:4.11'
 }
 
