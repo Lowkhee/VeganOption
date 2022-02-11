@@ -1,0 +1,280 @@
+#####################################################################################################
+# About the Crafting and Usage handler syntax
+# To define crafting or usage text for an item or block, create a string with the following name:
+#
+# 	<unlocalizedName>.vowiki.crafting
+# 	<unlocalizedName>.vowiki.usage
+#
+# where <unlocalizedName> is the unlocalized name of the item or block (usually item.veganoption.itemName or tile.veganoption.blockName)
+#
+# To insert the name of the corresponding item or block, use %1$s
+# To insert another localized string inside a usage/crafting string, use the format {unlocalized.string.name}
+# To reference another block or item use the syntax [[modid:item_name]] (when specifying metadata, use [[modid:item_name:meta]] instead)
+# To insert a line break, use \n
+#
+# Example:
+#
+#   example.string=Nested string example
+# 	item.veganoption.exampleItem.name=Example
+# 	item.veganoption.exampleItem.vowiki.usage=%1$s is nothing like [[minecraft:wheat]] or [[minecraft:golden_apple:1]], but it can do a {example.string}.\n\nLines broken.
+#
+# would give exampleItem a Usage tab that looks like:
+#
+# 	Example is nothing like Wheat or Golden Apple, but it can do a Nested string example.
+#	
+#	Lines broken.
+#
+#####################################################################################################
+
+# Creative Tab
+itemGroup.veganoption=The Vegan Option
+
+# WAILA and The One Probe strings
+veganoption.waila.format=%1$s : %2$s
+veganoption.top.format=%1$s: %2$s
+veganoption.context.growth.title=Growth
+veganoption.context.growth.value=%1$d%%
+veganoption.context.growth.mature.title=Growth
+veganoption.context.growth.mature.value=Mature
+veganoption.context.retting.title=Retting
+veganoption.context.retting.value=%1$d%%
+veganoption.info.retting.not.submerged=Needs to be submerged in water
+veganoption.info.retted=Retted
+veganoption.info.composter.empty=Empty
+veganoption.context.composting.title=Composting
+veganoption.context.composting.value=%1$d%%
+veganoption.context.temperature.title=Temperature
+veganoption.context.temperature.value=%1$d°C
+veganoption.info.basin.empty=Empty
+veganoption.info.basin.open=Open
+veganoption.info.basin.closed=Closed
+veganoption.context.fluid.title=%1$s
+veganoption.context.fluid.value=%2$dmB
+
+# Jute
+tile.veganoption.juteBundled.name=Bundled Jute
+tile.veganoption.juteBundled.vowiki.usage=In order to extract the [[veganoption:juteFibre]], %1$s must be first be retted (submerged in water). [[minecraft:comparator]] output is based on the current retting stage of the %1$s.
+item.veganoption.juteStalk.name=Jute Stalk
+item.veganoption.juteFibre.name=Jute Fibre
+item.veganoption.juteFibre.vowiki.crafting=%1$s is obtained by breaking fully retted [[veganoption:juteBundled]].
+item.veganoption.juteSeeds.name=Jute Seeds
+item.veganoption.juteSeeds.vowiki.usage=An alternative method of propagating a [[minecraft:double_plant:3]]. Can be planted on dirt, grass, or farmland.
+tile.veganoption.jutePlant.name=Jute
+
+# Burlap
+item.veganoption.burlap.name=Burlap
+item.veganoption.helmetBurlap.name=Burlap Cap
+item.veganoption.helmetBurlap.vowiki.usage=%1$s is a [[minecraft:leather_helmet]] alternative.
+item.veganoption.chestplateBurlap.name=Burlap Tunic
+item.veganoption.chestplateBurlap.vowiki.usage=%1$s is a [[minecraft:leather_chestplate]] alternative.
+item.veganoption.leggingsBurlap.name=Burlap Pants
+item.veganoption.leggingsBurlap.vowiki.usage=%1$s is a [[minecraft:leather_leggings]] alternative.
+item.veganoption.bootsBurlap.name=Burlap Boots
+item.veganoption.bootsBurlap.vowiki.usage=%1$s is a [[minecraft:leather_boots]] alternative.
+
+# Kapok
+tile.veganoption.kapok.name=Kapok Block
+tile.veganoption.kapok.vowiki.usage=A %1$s is a [[minecraft:wool]] alternative.
+tile.veganoption.kapok.white.name=White Kapok Block
+tile.veganoption.kapok.orange.name=Orange Kapok Block
+tile.veganoption.kapok.magenta.name=Magenta Kapok Block
+tile.veganoption.kapok.lightBlue.name=Light Blue Kapok Block
+tile.veganoption.kapok.yellow.name=Yellow Kapok Block
+tile.veganoption.kapok.lime.name=Lime Kapok Block
+tile.veganoption.kapok.pink.name=Pink Kapok Block
+tile.veganoption.kapok.gray.name=Gray Kapok Block
+tile.veganoption.kapok.silver.name=Light Gray Kapok Block
+tile.veganoption.kapok.cyan.name=Cyan Kapok Block
+tile.veganoption.kapok.purple.name=Purple Kapok Block
+tile.veganoption.kapok.blue.name=Blue Kapok Block
+tile.veganoption.kapok.brown.name=Brown Kapok Block
+tile.veganoption.kapok.green.name=Green Kapok Block
+tile.veganoption.kapok.red.name=Red Kapok Block
+tile.veganoption.kapok.black.name=Black Kapok Block
+item.veganoption.kapokTuft.name=Kapok Tuft
+
+# Faux Feather
+item.veganoption.fauxFeather.name=Faux Feather
+
+# Straw Bed
+item.veganoption.bedStraw.name=Straw Bed
+item.veganoption.bedStraw.tooltip=A bit itchy
+item.veganoption.bedStraw.vowiki.usage=%1$s is a [[minecraft:bed]]. However, it's a bit itchy: it deals 1/2 heart of damage whenever it is used.
+tile.veganoption.bedStraw.name=Straw Bed
+death.attack.veganoption.itchyBed=%1$s itched themselves to death in their sleep
+death.attack.veganoption.itchyBed.player=%1$s itched themselves to death in their sleep whilst trying to escape %2$s
+
+# Plant Milk
+item.veganoption.bucketPlantMilk.name=Plant Milk Bucket
+veganoption:plant_milk_bucket.vowiki.crafting=Note: %1$s can only be crafted using two of the same items as the plant milk source.
+veganoption:plant_milk_bucket.vowiki.usage=If you're looking for the curative effects that the Minecraft [[minecraft:milk_bucket]] gives,
+use [[veganoption:soap]] instead.
+tile.veganoption.plantMilk.name=Plant Milk
+fluid.tile.veganoption.plantMilk=Plant Milk
+
+# Egg
+item.veganoption.appleSauce.name=Apple Sauce
+item.veganoption.potatoStarch.name=Potato Starch
+item.veganoption.plasticEgg.name=Plastic Egg
+item.veganoption.plasticEgg.vowiki.usage=A %1$s is an [[minecraft:egg]] alternative for non-baking purposes.
+entity.veganoption.plasticEgg.name=Plastic Egg
+
+# Resin
+item.veganoption.resin.name=Resin
+
+# Vegetable Oil
+item.veganoption.seedSunflower.name=Sunflower Seeds
+item.veganoption.oilVegetable.name=Vegetable Oil
+fluid.tile.veganoption.fluidOilVegetable=Vegetable Oil
+tile.veganoption.fluidOilVegetable.name=Vegetable Oil
+
+# Vegetable Oil Ink
+item.veganoption.inkVegetableOilBlack.name=Black Vegetable Oil Ink
+item.veganoption.inkVegetableOilBlack.vowiki.usage=%1$s is an [[minecraft:dye:0]] dye alternative.
+fluid.tile.veganoption.inkBlack=Black Vegetable Oil Ink
+tile.veganoption.inkBlack.name=Black Vegetable Oil Ink
+item.veganoption.inkVegetableOilWhite.name=White Vegetable Oil Ink
+item.veganoption.inkVegetableOilWhite.vowiki.usage=%1$s is a [[minecraft:dye:15]] dye alternative.
+fluid.tile.veganoption.inkWhite=White Vegetable Oil Ink
+tile.veganoption.inkWhite.name=White Vegetable Oil Ink
+item.veganoption.waxVegetable.name=Vegetable Wax
+item.veganoption.rosin.name=Rosin
+
+# Bioplastic
+item.veganoption.bioplastic.name=Bioplastic
+item.veganoption.plasticRod.name=Plastic Rod
+
+# Composting
+item.veganoption.rottenPlants.name=Rotten Plants
+tile.veganoption.composter.name=Composter
+tile.veganoption.composter.vowiki.usage=A %1$s can be used to turn plant matter into [[veganoption:compost]] or [[veganoption:rottenPlants]].\n\nTo create [[veganoption:compost]], fill the %1$s with a mixture of "green" and "brown" materials. To create [[veganoption:rottenPlants]], only use "green" materials. See the "{veganoption.vowiki.composting}" tab for the list of "green" and "brown" materials.\n\nThe higher the temperature inside the composter, the faster the material will decompose. The speed that the temperature increases is determined by 3 factors:\n\n1) The last time the compost was tumbled (sneak + use the %1$s with an empty hand to tumble it)\n\n2) The fullness of the composter (the more full it is, the faster it will decompose)\n\n3) The ratio of "green" to "brown" materials (a ratio of 2:1 provides the maximum speed)\n\nIf the %1$s has not been tumbled in a while, it will start to lose its heat. Every time the %1$s is tumbled, it will lose heat initially, but will gain more heat in the long run. The %1$s should be tumbled about twice every Minecraft day.\n\n[[minecraft:comparator]] output from the %1$s is based on its current temperature.
+tile.veganoption.compost.name=Compost
+tile.veganoption.compost.vowiki.usage=%1$s provides passive improvement to adjacent [[minecraft:farmland]].
+item.veganoption.fertilizer.name=Fertilizer
+item.veganoption.fertilizer.vowiki.usage=%1$s is a [[minecraft:dye:15]] alternative.
+veganoption.gui.composter.tumble=Tumble Composter
+veganoption.gui.composter.tumble.desc=Every time the composter is tumbled, it will lose heat initially, but will gain more heat in the long run. The composter should be tumbled about twice every Minecraft day.
+veganoption.gui.composter.temperature=Temperature: %s
+veganoption.gui.composter.temperature.desc=Temperature increase is determined by:\n- The last time the composter was tumbled\n- The fullness of the composter\n- The ratio of "green" to "brown" materials (a ratio of 2:1 is ideal)
+veganoption.gui.composter.composting=Composting: %s
+veganoption.gui.composter.composting.desc=The higher the temperature inside the composter, the faster the material will decompose.
+
+# Soap
+tile.veganoption.lyeWater.name=Wood Ash Lye
+tile.veganoption.lyeWater.vowiki.usage=Warning: %1$s is corrosive.
+fluid.tile.veganoption.lyeWater=Wood Ash Lye
+death.attack.veganoption.lyeWater=%1$s bathed in lye
+death.attack.veganoption.lyeWater.player=%1$s bathed in lye whilst trying to escape %2$s
+item.veganoption.soap.name=Soap
+item.veganoption.soap.vowiki.usage=When %1$s is used, it will remove all status effects from the player.
+item.veganoption.soapSolution.name=Soap Solution
+item.veganoption.soapSolution.vowiki.usage=%1$s can be used to create a {entity.veganoption.bubble.name}. It can be used by either a player or a [[minecraft:dispenser]].
+fluid.tile.veganoption.fluidSoapSolution=Soap Solution
+tile.veganoption.fluidSoapSolution.name=Soap Solution
+
+# Frozen Bubble
+entity.veganoption.bubble.name=Bubble
+item.veganoption.frozenBubble.name=Frozen Bubble
+item.veganoption.frozenBubble.vowiki.crafting=A %1$s can be created by using [[veganoption:soapSolution]] to create a {entity.veganoption.bubble.name} in a very cold area (surrounded by [[minecraft:ice]]/[[minecraft:snow]]).
+item.veganoption.frozenBubbleFilled.name=Frozen Bubble (Partially Filled)
+item.veganoption.frozenBubbleFilled.vowiki.crafting=A %1$s can be created by placing a [[veganoption:frozenBubble]] in [[veganoption:rawEnder]].
+item.veganoption.frozenBubbleFilled.vowiki.usage=A %1$s can be turned into an [[minecraft:ender_pearl]] by filling it completely with [[veganoption:rawEnder]].
+
+# Raw Ender
+tile.veganoption.encrustedObsidian.name=Encrusted Obsidian
+tile.veganoption.encrustedObsidian.vowiki.usage=An [[veganoption:enderRift]] can be created by placing 4 %1$s blocks in a diamond shape with a gap in the center.
+item.veganoption.bucketRawEnder.name=Raw Ender Bucket
+tile.veganoption.rawEnder.name=Raw Ender
+tile.veganoption.rawEnder.vowiki.crafting=Water flowing through an [[veganoption:enderRift]] at night has a chance to be converted into %1$s. However, if this is done during the day, a random block around the [[veganoption:enderRift]] will be consumed by it and lost forever.
+fluid.tile.veganoption.rawEnder=Raw Ender
+tile.veganoption.enderRift.name=Ender Rift
+
+# False Morel
+item.veganoption.falseMorel.name=False Morel
+item.veganoption.falseMorel.vowiki.usage=A %1$s is a toxic mushroom that can be used as a [[minecraft:spider_eye]] alternative.
+item.veganoption.falseMorelFermented.name=Fermented False Morel
+
+# Mob Heads
+item.veganoption.papierMache.name=Papier-Mâché
+item.veganoption.mobHeadBlank.name=Blank Mob Head
+
+# Gunpowder
+item.veganoption.sulfur.name=Sulfur
+item.veganoption.saltpeter.name=Saltpeter
+
+# Backpack
+item.veganoption.backpackBasic.name=Basic Backpack
+item.veganoption.backpackAdvanced.name=Advanced Backpack
+
+# Proof of Suffering
+item.veganoption.sufferingFragment.name=Fragment of Suffering
+item.veganoption.sufferingProof.name=Proof of Suffering
+item.veganoption.sufferingProof.vowiki.usage=%1$s is a [[minecraft:ghast_tear]] alternative.
+
+# Dolls Eye
+item.veganoption.dollsEye.name=Doll's Eye
+item.veganoption.dollsEye.vowiki.common=A %1$s is the poisonous berry of the plant Actaea Pachypoda (also known as white baneberry).
+item.veganoption.dollsEye.vowiki.usage={item.veganoption.dollsEye.vowiki.common}\n\n%1$s is a [[minecraft:spider_eye]] alternative.
+item.veganoption.dollsEye.vowiki.crafting={item.veganoption.dollsEye.vowiki.common}\n\n%1$s can only be found by breaking [[minecraft:tallgrass:1]] in temperate forest biomes.
+
+# Basin
+tile.veganoption.basin.name=Basin
+tile.veganoption.basin.vowiki.usage=%1$s is a simple fluid tank that holds up to 1 buckets worth of fluid. By default, it has a lid, but when a redstone signal is applied, the lid is removed and it acts as a fluid hopper (fluid blocks will flow into it).\n\nWhen container items (buckets, bottles, etc) are dropped inside an open %1$s, they will be filled with the fluid inside the %1$s if possible.
+
+# Seitan
+item.veganoption.wheatFlour.name=Wheat Flour
+item.veganoption.wheatDough.name=Wheat Dough
+item.veganoption.seitanRawUnwashed.name=Raw Seitan (Unwashed)
+item.veganoption.seitanRaw.name=Raw Seitan
+item.veganoption.seitanCooked.name=Seitan
+
+# Crates
+item.veganoption.crate.name=Crate
+item.veganoption.crated.apple_sauce.name=Crated Applesauce
+item.veganoption.crated.bioplastic.name=Crated Bioplastic
+item.veganoption.crated.burlap.name=Crated Burlap
+item.veganoption.crated.compost.name=Crated Compost
+item.veganoption.crated.dollseye.name=Crated Dolls Eye
+item.veganoption.crated.falsemorel.name=Crated False Morel
+item.veganoption.crated.falsemorelfermented.name=Crated False Morel Fermented
+item.veganoption.crated.fauxfeather.name=Crated Faux Feather
+item.veganoption.crated.fertilizer.name=Crated Fertilizer
+item.veganoption.crated.sufferingfragment.name=Crated Fragment of Suffering
+item.veganoption.crated.frozenbubble.name=Crated Frozen Bubble
+item.veganoption.crated.jutefibre.name=Crated Jute Fibre
+item.veganoption.crated.juteseeds.name=Crated Jute Seeds
+item.veganoption.crated.jutestalk.name=Crated Jute Stalk
+item.veganoption.crated.kapoktuft.name=Crated Kapok Tuft
+item.veganoption.crated.plastic_egg.name=Crated Plastic Egg
+item.veganoption.crated.plastic_rod.name=Crated Plastic Rod
+item.veganoption.crated.potato_starch.name=Crated Potato Starch
+item.veganoption.crated.sufferingproof.name=Crated Proof of Suffering
+item.veganoption.crated.resin.name=Crated Resin
+item.veganoption.crated.rosin.name=Crated Rosin
+item.veganoption.crated.rottenplants.name=Crated Rotten Plants
+item.veganoption.crated.saltpeter.name=Crated Saltpeter
+item.veganoption.crated.seitancooked.name=Crated Cooked Seitan
+item.veganoption.crated.sulfur.name=Crated Sulfur
+item.veganoption.crated.seedssunflower.name=Crated Sunflower Seeds
+item.veganoption.crated.waxvegetable.name=Crated Vegetable Wax
+item.veganoption.crated.seitanRaw.name=Crated Raw Seitan
+item.veganoption.crated.seitanRawUnwashed.name=Crated Unwashed Seitan
+item.veganoption.crated.wheatDough.name=Crated Wheat Dough
+item.veganoption.crated.wheatFlour.name=Crated Wheat Flour
+
+# JEI Strings
+veganoption.jei.byproduct.of=Byproduct of
+veganoption.jei.byproducts=Byproducts
+veganoption.jei.usage=Usage
+veganoption.jei.crafting=Crafting
+veganoption.jei.drops=Drops
+veganoption.jei.composting=Composting
+veganoption.jei.references=References
+veganoption.jei.pistonCrafting=Piston Crafting
+veganoption.jei.pistonCrafting.tooltip.fluidInput=Fluid inputs must be displaced by the piston
+veganoption.jei.pistonCrafting.tooltip.fluidOutput=Fluid outputs require a fluid handler (tank, drum, etc) below the piston head
+
+# Additional HarvestCraft content
+item.veganoption.bbqSauce.name=BBQ Sauce
+item.veganoption.bbqTofu.name=BBQ Tofu
+item.veganoption.bbqTofu.tooltip=Cut on a bias

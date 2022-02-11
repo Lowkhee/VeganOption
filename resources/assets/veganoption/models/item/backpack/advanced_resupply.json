@@ -1,0 +1,8 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "veganoption:items/backpack/advanced",
+		"layer1": "veganoption:items/backpack/advanced.outline",
+		"layer2": "veganoption:items/backpack/resupply"
+    }
+}
